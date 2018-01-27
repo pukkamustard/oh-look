@@ -69,6 +69,7 @@ type alias Post =
     { createdAt : Time
     , direction : Vec2
     , origin : Vec2
+    , msg : String
     }
 
 
@@ -260,6 +261,7 @@ update msg model =
                                 { createdAt = model.time
                                 , origin = island.position
                                 , direction = Vector2.direction worldPosition island.position
+                                , msg = "Hello!"
                                 }
                                     :: model.posts
 
@@ -353,12 +355,21 @@ drawPost now post =
                         |> Vector2.scale (speed * (now - post.createdAt))
                     )
     in
-        S.circle
-            [ SA.cx (position |> getX |> toString)
-            , SA.cy (position |> getY |> toString)
-            , SA.r "10"
+        S.g []
+            [ S.circle
+                [ SA.cx (position |> getX |> toString)
+                , SA.cy (position |> getY |> toString)
+                , SA.r "10"
+                , SA.stroke "Blue"
+                , SA.fill "none"
+                ]
+                []
+            , S.text_
+                [ SA.x (position |> getX |> toString)
+                , SA.y (position |> getY |> toString)
+                ]
+                [ S.text post.msg ]
             ]
-            []
 
 
 drawIsland : Focus -> Island -> S.Svg Msg
