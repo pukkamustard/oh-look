@@ -1,13 +1,14 @@
 const webpack = require('webpack')
 const path = require('path')
 
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
   entry: './src/index.js',
 
   output: {
-    path: path.join(__dirname, '/build'),
+    path: path.join(__dirname, '/docs'),
     filename: 'island.js'
   },
 
@@ -30,7 +31,9 @@ module.exports = {
 
   plugins: [new HtmlWebpackPlugin({
     template: 'src/index.html'
-  })],
+  }),
+    new CopyWebpackPlugin([{from: 'assets/', to: 'assets/'}])
+  ],
 
   devServer: {
     inline: true

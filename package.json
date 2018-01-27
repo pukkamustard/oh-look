@@ -16,6 +16,7 @@
     "ws": "^4.0.0"
   },
   "devDependencies": {
+    "copy-webpack-plugin": "^4.3.1",
     "elm-hot-loader": "^0.5.4",
     "elm-loader": "git://github.com/dividat/elm-loader.git",
     "html-webpack-plugin": "^2.30.1",
