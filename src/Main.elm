@@ -5,6 +5,7 @@ import Random
 import Time exposing (Time)
 import Char
 import Task
+import List.Extra
 
 
 --
@@ -20,7 +21,6 @@ import Math.Vector2 as Vector2 exposing (Vec2, vec2, getX, getY)
 import Html as H
 import Svg as S
 import Svg.Attributes as SA
-import Svg.Events as SE
 
 
 --
@@ -54,6 +54,7 @@ main =
 
 type alias Island =
     { position : Vec2
+    , animation : Animation String
     }
 
 
@@ -62,9 +63,14 @@ type alias Island =
 TODO: check that not too close to existing islands
 
 -}
-islandGenerator : List Island -> Random.Generator Island
-islandGenerator islands =
-    Random.map2 (\x y -> { position = vec2 x y })
+islandGenerator : Time -> List Island -> Random.Generator Island
+islandGenerator now islands =
+    Random.map2
+        (\x y ->
+            { position = vec2 x y
+            , animation = islandAnimation now
+            }
+        )
         (Random.float 0 (worldSize |> getX))
         (Random.float 0 (worldSize |> getY))
 
@@ -270,7 +276,7 @@ init =
         |> Return.singleton
         |> Return.command (Window.size |> Task.perform Resize)
         |> Return.command (Time.now |> Task.perform SetTime)
-        |> Return.command (islandGenerator [] |> Random.generate AddIsland)
+        |> Return.command (islandGenerator 0 [] |> Random.generate AddIsland)
 
 
 
@@ -311,6 +317,7 @@ update msg model =
                 |> Return.singleton
                 |> Return.andThen updateFocus
                 |> Return.andThen dropFromTheFaceOfTheWorld
+                |> Return.andThen loopIslandAnimation
 
         SetTime t ->
             { model | time = t }
@@ -323,7 +330,7 @@ update msg model =
             else if keyCode == Char.toCode 'c' then
                 model
                     |> Return.singleton
-                    |> Return.command (islandGenerator model.islands |> Random.generate AddIsland)
+                    |> Return.command (islandGenerator model.time model.islands |> Random.generate AddIsland)
             else
                 model
                     |> Return.singleton
@@ -414,6 +421,25 @@ dropFromTheFaceOfTheWorld model =
         |> Return.singleton
 
 
+loopIslandAnimation : Model -> Return Msg Model
+loopIslandAnimation model =
+    { model
+        | islands =
+            model.islands
+                |> List.map
+                    (\island ->
+                        { island
+                            | animation =
+                                if Animation.isDone island.animation model.time then
+                                    islandAnimation model.time
+                                else
+                                    island.animation
+                        }
+                    )
+    }
+        |> Return.singleton
+
+
 
 -- SUBSCRIPTIONS
 
@@ -459,7 +485,7 @@ view model =
         ]
         ([ [ background ]
          , model.islands
-            |> List.map (drawIsland model.focus)
+            |> List.map (drawIsland model.time model.focus)
          , model.posts
             |> List.map (drawPost model.time)
          ]
@@ -474,7 +500,7 @@ background =
         , SA.y "0"
         , SA.height (worldSize |> getY |> toString)
         , SA.width (worldSize |> getX |> toString)
-        , SA.fill "aqua"
+        , SA.fill "rgb(69,172,221)"
         , SA.opacity "0.5"
         ]
         []
@@ -510,13 +536,50 @@ drawPost now post =
             ]
 
 
-drawIsland : Focus -> Island -> S.Svg Msg
-drawIsland focus island =
-    S.circle
-        [ SA.cx (island.position |> getX |> toString)
-        , SA.cy (island.position |> getY |> toString)
-        , SA.r "25"
-        , SA.fill "red"
-        , SE.onClick (SelectIsland island)
-        ]
-        []
+drawIsland : Time -> Focus -> Island -> S.Svg Msg
+drawIsland now focus island =
+    let
+        topLeft =
+            Vector2.sub
+                island.position
+                (islandWorldSize |> Vector2.scale 0.5)
+
+        overlayAttributes =
+            [ SA.x (topLeft |> getX |> toString)
+            , SA.y (topLeft |> getY |> toString)
+            , SA.height (islandWorldSize |> getX |> toString)
+            , SA.width (islandWorldSize |> getY |> toString)
+            ]
+
+        image path =
+            S.image
+                ([ SA.xlinkHref path ] ++ overlayAttributes)
+                []
+    in
+        S.g
+            [--SE.onClick (SelectIsland island)
+            ]
+            [ image "assets/island_01_waterGradient.png"
+            , image "assets/island_01_01.png"
+            , image (Animation.animate island.animation now)
+            ]
+
+
+islandAnimation : Time -> Animation String
+islandAnimation now =
+    let
+        images =
+            [ "assets/island_01_01.png"
+            , "assets/island_01_02.png"
+            , "assets/island_01_03.png"
+            , "assets/island_01_04.png"
+            ]
+    in
+        Animation.animation now
+            (1 * Time.second)
+            (\c ->
+                images
+                    |> List.Extra.getAt (images |> List.length |> toFloat |> (*) c |> ceiling)
+                    --|> Maybe.withDefault "assets/island_01_01.png"
+                    |> Maybe.withDefault ""
+            )
