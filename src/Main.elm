@@ -25,7 +25,7 @@ import Svg.Attributes as SA
 
 --
 
-import Uuid
+import Uuid exposing (Uuid)
 import WebSocket as WS
 import Json.Encode as JE
 import Json.Decode as JD
@@ -54,7 +54,7 @@ main =
 
 
 type alias Island =
-    { id : Uuid.Uuid
+    { id : Uuid
     , position : Vec2
     , animation : Animation String
     }
@@ -92,11 +92,26 @@ encodeIsland island =
 
 
 type alias Post =
-    { createdAt : Time
+    { id : Uuid
+    , createdAt : Time
     , direction : Vec2
     , origin : Vec2
     , msg : String
     }
+
+
+postGenerator : Time -> Vec2 -> Vec2 -> String -> Random.Generator Post
+postGenerator now origin direction msg =
+    Random.map
+        (\id ->
+            { id = id
+            , createdAt = now
+            , direction = direction
+            , origin = origin
+            , msg = msg
+            }
+        )
+        Uuid.uuidGenerator
 
 
 vec2Decoder : JD.Decoder Vec2
@@ -117,6 +132,7 @@ encodeVec2 vec =
 postDecoder : JD.Decoder Post
 postDecoder =
     JD.succeed Post
+        |> JDA.apply (Uuid.decoder)
         |> JDA.apply (JD.field "createdAt" JD.float)
         |> JDA.apply (JD.field "direction" vec2Decoder)
         |> JDA.apply (JD.field "origin" vec2Decoder)
@@ -126,7 +142,8 @@ postDecoder =
 encodePost : Post -> JE.Value
 encodePost post =
     JE.object
-        [ ( "createdAt", JE.float post.createdAt )
+        [ ( "id", Uuid.encode post.id )
+        , ( "createdAt", JE.float post.createdAt )
         , ( "direction", encodeVec2 post.direction )
         , ( "origin", encodeVec2 post.direction )
         , ( "msg", JE.string post.msg )
@@ -299,6 +316,8 @@ type Msg
     = CreateIsland Island
     | SelectIsland Island
       --
+    | CreatePost Post
+      --
     | KeyPress Keyboard.KeyCode
     | Click Mouse.Position
     | Resize Window.Size
@@ -348,6 +367,11 @@ update msg model =
                 model
                     |> Return.singleton
 
+        CreatePost post ->
+            { model | posts = post :: model.posts }
+                |> Return.singleton
+                |> Return.command (post |> NewPost |> send)
+
         Click position ->
             let
                 relative =
@@ -376,22 +400,15 @@ update msg model =
                         _ ->
                             Nothing
             in
-                { model
-                    | posts =
-                        case newPost of
-                            Just post ->
-                                post :: model.posts
-
-                            Nothing ->
-                                model.posts
-                }
+                model
                     |> Return.singleton
                     |> Return.command
-                        (case newPost of
-                            Just post ->
-                                post |> NewPost |> send
+                        (case model.focus of
+                            OneIsland island ->
+                                postGenerator model.time island.position (Vector2.direction worldPosition island.position) "Hello!"
+                                    |> Random.generate CreatePost
 
-                            Nothing ->
+                            _ ->
                                 Cmd.none
                         )
 
@@ -573,8 +590,9 @@ drawIsland now focus island =
             [--SE.onClick (SelectIsland island)
             ]
             [ image "assets/island_01_waterGradient.png"
-            , image "assets/island_01_01.png"
             , image (Animation.animate island.animation now)
+            , image "assets/character_01.png"
+            , image "assets/palmTree_01_01.png"
             ]
 
 
@@ -593,5 +611,5 @@ islandAnimation now =
             (\c ->
                 images
                     |> List.Extra.getAt (images |> List.length |> toFloat |> (*) c |> ceiling)
-                    |> Maybe.withDefault ""
+                    |> Maybe.withDefault "assets/island_01_01.png"
             )

@@ -6,24 +6,26 @@ console.log('Server listening on port 9998')
 
 const events = new EventEmitter()
 
+// var posts = {}
+
 wss.on('connection', function connection (ws) {
   // Send some stuff to client
   ws.send('All currently existing islands')
 
   // Hook up to events
-  const eventListener = function (someEvent) {
+  const eventListener = function (post) {
     // send something to client on event
-    ws.send('Some event happened')
+    ws.send(JSON.stringify(post))
   }
-  events.on('someEvent', eventListener)
+  events.on('new-post', eventListener)
 
   // remove disconnected client from events
   ws.on('close', function () {
-    events.removeListener('someEvent', eventListener)
+    events.removeListener('new-post', eventListener)
   })
 
   ws.on('error', function () {
-    events.removeListener('someEvent', eventListener)
+    events.removeListener('new-post', eventListener)
   })
 
   // Handle messages from client
@@ -38,6 +40,7 @@ wss.on('connection', function connection (ws) {
 
       case 'NewPost':
         // do something
+        events.emit('new-post', msg.post)
         break
     }
   })
