@@ -1,31 +1,33 @@
 const WebSocket = require('ws')
 const EventEmitter = require('events')
 
-const wss = new WebSocket.Server({ port: 9998 })
+const wss = new WebSocket.Server({ host: '0.0.0.0', port: 9998 })
 console.log('Server listening on port 9998')
 
 const events = new EventEmitter()
 
-// var posts = {}
-
 wss.on('connection', function connection (ws) {
-  // Send some stuff to client
-  ws.send('All currently existing islands')
-
   // Hook up to events
-  const eventListener = function (post) {
-    // send something to client on event
+  const onNewPost = function (post) {
     ws.send(JSON.stringify({type: 'NewPost', post: post}))
   }
-  events.on('new-post', eventListener)
+
+  const onNewIsland = function (island) {
+    ws.send(JSON.stringify({type: 'NewIsland', island: island}))
+  }
+
+  events.on('NewPost', onNewPost)
+  events.on('NewIsland', onNewIsland)
 
   // remove disconnected client from events
   ws.on('close', function () {
-    events.removeListener('new-post', eventListener)
+    events.removeListener('NewPost', onNewPost)
+    events.removeListener('NewIsland', onNewIsland)
   })
 
   ws.on('error', function () {
-    events.removeListener('new-post', eventListener)
+    events.removeListener('NewPost', onNewPost)
+    events.removeListener('NewIsland', onNewIsland)
   })
 
   // Handle messages from client
@@ -35,12 +37,11 @@ wss.on('connection', function connection (ws) {
 
     switch (msg.type) {
       case 'NewIsland':
-        // do something
+        events.emit('NewIsland', msg.island)
         break
 
       case 'NewPost':
-        // do something
-        events.emit('new-post', msg.post)
+        events.emit('NewPost', msg.post)
         break
     }
   })

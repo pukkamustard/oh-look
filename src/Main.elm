@@ -88,6 +88,14 @@ encodeIsland island =
         ]
 
 
+islandDecoder : JD.Decoder Island
+islandDecoder =
+    JD.succeed Island
+        |> JDA.apply (JD.field "id" Uuid.decoder)
+        |> JDA.apply (JD.field "position" vec2Decoder)
+        |> JDA.apply (JD.succeed <| Animation.static "assets/island_01_01.png")
+
+
 
 -- Post
 
@@ -162,7 +170,7 @@ type ServerMsg
 
 serverUrl : String
 serverUrl =
-    "ws://localhost:9998"
+    "ws://192.168.43.251:9998"
 
 
 encodeServerMsg : ServerMsg -> JE.Value
@@ -190,6 +198,10 @@ serverMsgDecoder =
                     "NewPost" ->
                         JD.succeed NewPost
                             |> JDA.apply (JD.field "post" postDecoder)
+
+                    "NewIsland" ->
+                        JD.succeed NewIsland
+                            |> JDA.apply (JD.field "island" islandDecoder)
 
                     _ ->
                         JD.fail "not implemented"
@@ -442,8 +454,14 @@ update msg model =
             }
                 |> Return.singleton
 
-        ServerMsg (Ok _) ->
-            model
+        ServerMsg (Ok (NewIsland island)) ->
+            { model
+                | islands =
+                    if List.member island model.islands then
+                        model.islands
+                    else
+                        (island) :: model.islands
+            }
                 |> Return.singleton
 
         ServerMsg (Err msg) ->
