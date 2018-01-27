@@ -169,7 +169,8 @@ type ServerMsg
 
 serverUrl : String
 serverUrl =
-    "ws://localhost:9998"
+    --"ws://localhost:9998"
+    "ws://192.168.43.251:9998"
 
 
 encodeServerMsg : ServerMsg -> JE.Value
@@ -355,6 +356,7 @@ type Msg
     | Resize Window.Size
     | Tick Time
     | SetTime Time
+    | CleanUp
       --
     | ServerMsg (Result String ServerMsg)
 
@@ -380,6 +382,10 @@ update msg model =
             { model | time = model.time + dt }
                 |> Return.singleton
                 |> Return.andThen updateFocus
+
+        CleanUp ->
+            model
+                |> Return.singleton
                 |> Return.andThen dropFromTheFaceOfTheWorld
 
         SetTime t ->
@@ -456,7 +462,7 @@ update msg model =
                     if List.member post model.posts then
                         model.posts
                     else
-                        (post |> Debug.log "remote post!") :: model.posts
+                        post :: model.posts
             }
                 |> Return.singleton
 
@@ -515,6 +521,7 @@ dropFromTheFaceOfTheWorld model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     [ AnimationFrame.diffs Tick
+    , Time.every (10 * Time.second) (always CleanUp)
     , Keyboard.presses KeyPress
     , Mouse.clicks Click
     , Window.resizes Resize
@@ -580,8 +587,7 @@ preloadAssets =
         , image "assets/island_01_02.png" "island02"
         , image "assets/island_01_03.png" "island03"
         , image "assets/island_01_02.png" "island04"
-
-        --, image "assets/island_01_waterGradient.png" "waterGradient"
+        , image "assets/island_01_waterGradient.png" "waterGradient"
         ]
 
 
@@ -701,7 +707,8 @@ drawIsland now focus island =
                 _ ->
                     SA.visibility "true"
             ]
-            [ islandAnimation
+            [ image "assets/island_01_waterGradient.png" []
+            , islandAnimation
             , image "assets/character_01.png" []
             , image "assets/palmTree_01_01.png" []
             ]
