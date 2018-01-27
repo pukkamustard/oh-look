@@ -5,7 +5,6 @@ import Random.Pcg as Random
 import Time exposing (Time)
 import Char
 import Task
-import List.Extra
 
 
 --
@@ -57,7 +56,6 @@ main =
 type alias Island =
     { id : Uuid
     , position : Vec2
-    , animation : Animation String
     }
 
 
@@ -72,7 +70,6 @@ islandGenerator islands =
         (\id x y ->
             { id = id
             , position = vec2 x y
-            , animation = Animation.static "assets/island_01_01.png"
             }
         )
         Uuid.uuidGenerator
@@ -93,7 +90,6 @@ islandDecoder =
     JD.succeed Island
         |> JDA.apply (JD.field "id" Uuid.decoder)
         |> JDA.apply (JD.field "position" vec2Decoder)
-        |> JDA.apply (JD.succeed <| Animation.static "assets/island_01_01.png")
 
 
 
@@ -385,7 +381,6 @@ update msg model =
                 |> Return.singleton
                 |> Return.andThen updateFocus
                 |> Return.andThen dropFromTheFaceOfTheWorld
-                |> Return.andThen loopIslandAnimation
 
         SetTime t ->
             { model | time = t }
@@ -513,25 +508,6 @@ dropFromTheFaceOfTheWorld model =
         |> Return.singleton
 
 
-loopIslandAnimation : Model -> Return Msg Model
-loopIslandAnimation model =
-    { model
-        | islands =
-            model.islands
-                |> List.map
-                    (\island ->
-                        { island
-                            | animation =
-                                if Animation.isDone island.animation model.time then
-                                    islandAnimation model.time
-                                else
-                                    island.animation
-                        }
-                    )
-    }
-        |> Return.singleton
-
-
 
 -- SUBSCRIPTIONS
 
@@ -604,7 +580,8 @@ preloadAssets =
         , image "assets/island_01_02.png" "island02"
         , image "assets/island_01_03.png" "island03"
         , image "assets/island_01_02.png" "island04"
-        , image "assets/island_01_waterGradient.png" "waterGradient"
+
+        --, image "assets/island_01_waterGradient.png" "waterGradient"
         ]
 
 
@@ -663,15 +640,58 @@ drawIsland now focus island =
             , SA.width (islandWorldSize |> getY |> toString)
             ]
 
-        image path =
+        image path content =
             S.image
                 ([ SA.xlinkHref path ] ++ overlayAttributes)
-                []
+                content
 
-        imageId id =
-            S.use
-                ([ SA.xlinkHref ("#" ++ id) ] ++ overlayAttributes)
-                []
+        islandAnimation =
+            S.g []
+                [ image "assets/island_01_01.png"
+                    [ S.animate
+                        [ SA.attributeName "visibility"
+                        , SA.keyTimes "0;0.25"
+                        , SA.values "visible;hidden"
+                        , SA.calcMode "discrete"
+                        , SA.dur "1s"
+                        , SA.repeatCount "indefinite"
+                        ]
+                        []
+                    ]
+                , image "assets/island_01_02.png"
+                    [ S.animate
+                        [ SA.attributeName "visibility"
+                        , SA.keyTimes "0;0.25;0.5"
+                        , SA.values "hidden;visible;hidden"
+                        , SA.calcMode "discrete"
+                        , SA.dur "1s"
+                        , SA.repeatCount "indefinite"
+                        ]
+                        []
+                    ]
+                , image "assets/island_01_03.png"
+                    [ S.animate
+                        [ SA.attributeName "visibility"
+                        , SA.keyTimes "0;0.5;0.75"
+                        , SA.values "hidden;visible;hidden"
+                        , SA.calcMode "discrete"
+                        , SA.dur "1s"
+                        , SA.repeatCount "indefinite"
+                        ]
+                        []
+                    ]
+                , image "assets/island_01_04.png"
+                    [ S.animate
+                        [ SA.attributeName "visibility"
+                        , SA.keyTimes "0;0.75;1"
+                        , SA.values "hidden;visible;hidden"
+                        , SA.calcMode "discrete"
+                        , SA.dur "1s"
+                        , SA.repeatCount "indefinite"
+                        ]
+                        []
+                    ]
+                ]
     in
         S.g
             [ case focus of
@@ -681,33 +701,7 @@ drawIsland now focus island =
                 _ ->
                     SA.visibility "true"
             ]
-            [ image "assets/island_01_waterGradient.png"
-            , image (Animation.animate island.animation now)
-            , image "assets/character_01.png"
-            , image "assets/palmTree_01_01.png"
+            [ islandAnimation
+            , image "assets/character_01.png" []
+            , image "assets/palmTree_01_01.png" []
             ]
-
-
-islandAnimation : Time -> Animation String
-islandAnimation now =
-    let
-        images =
-            [ "assets/island_01_01.png"
-            , "assets/island_01_02.png"
-            , "assets/island_01_03.png"
-            , "assets/island_01_04.png"
-            ]
-    in
-        Animation.animation now
-            (0.8 * Time.second)
-            (\c ->
-                images
-                    |> List.Extra.getAt
-                        (images
-                            |> List.length
-                            |> toFloat
-                            |> (*) c
-                            |> floor
-                        )
-                    |> Maybe.withDefault "assets/island_01_01.png"
-            )
