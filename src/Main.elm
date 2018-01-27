@@ -37,9 +37,40 @@ main =
         }
 
 
+
+-- Island
+
+
 type alias Island =
     { position : Vec2
     }
+
+
+{-| Generate a random island
+
+TODO: check that not too close to existing islands
+
+-}
+islandGenerator : List Island -> Random.Generator Island
+islandGenerator islands =
+    Random.map2 (\x y -> { position = vec2 x y })
+        (Random.float 0 (worldSize islands |> getX))
+        (Random.float 0 (worldSize islands |> getY))
+
+
+
+-- Post
+
+
+type alias Post =
+    { createdAt : Time
+    , direction : Vec2
+    , origin : Vec2
+    }
+
+
+
+-- Game View helpers
 
 
 {-| Focus (or what is my view of the world)
@@ -132,18 +163,6 @@ type alias Model =
     }
 
 
-{-| Generate a random island
-
-TODO: check that not too close to existing islands
-
--}
-islandGenerator : List Island -> Random.Generator Island
-islandGenerator islands =
-    Random.map2 (\x y -> { position = vec2 x y })
-        (Random.float 0 (worldSize islands |> getX))
-        (Random.float 0 (worldSize islands |> getY))
-
-
 init : Return Msg Model
 init =
     { time = 0
@@ -159,8 +178,8 @@ init =
 
 
 type Msg
-    = GenerateIsland
-    | AddIsland Island
+    = AddIsland Island
+    | SelectIsland Island
       --
     | KeyPress Keyboard.KeyCode
     | Tick Time
@@ -169,15 +188,16 @@ type Msg
 update : Msg -> Model -> Return Msg Model
 update msg model =
     case msg of
-        GenerateIsland ->
-            model
-                |> Return.singleton
-                |> Return.command (islandGenerator model.islands |> Random.generate AddIsland)
-
         AddIsland island ->
             { model
                 | islands = island :: model.islands
                 , focus = transitionFocus model model.focus (OneIsland island)
+            }
+                |> Return.singleton
+
+        SelectIsland island ->
+            { model
+                | focus = transitionFocus model model.focus (OneIsland island)
             }
                 |> Return.singleton
 
@@ -190,6 +210,10 @@ update msg model =
             if keyCode == Char.toCode 'w' then
                 { model | focus = transitionFocus model model.focus World }
                     |> Return.singleton
+            else if keyCode == Char.toCode 'c' then
+                model
+                    |> Return.singleton
+                    |> Return.command (islandGenerator model.islands |> Random.generate AddIsland)
             else
                 model
                     |> Return.singleton
@@ -255,7 +279,6 @@ view model =
             |> viewConfig model
             |> viewBoxHelper
             |> SA.viewBox
-        , SE.onClick GenerateIsland
         ]
         (model.islands
             |> List.map (drawIsland model.focus)
@@ -269,5 +292,6 @@ drawIsland focus island =
         , SA.cy (island.position |> getY |> toString)
         , SA.r "25"
         , SA.fill "red"
+        , SE.onClick (SelectIsland island)
         ]
         []
