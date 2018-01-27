@@ -25,6 +25,14 @@ import Svg.Events as SE
 
 --
 
+import WebSocket as WS
+import Json.Encode as JE
+import Json.Decode as JD
+import Json.Decode.Applicative as JDA
+
+
+--
+
 import Window
 import Keyboard
 import Mouse
@@ -71,6 +79,78 @@ type alias Post =
     , origin : Vec2
     , msg : String
     }
+
+
+vec2Decoder : JD.Decoder Vec2
+vec2Decoder =
+    JD.succeed vec2
+        |> JDA.apply (JD.field "x" JD.float)
+        |> JDA.apply (JD.field "y" JD.float)
+
+
+encodeVec2 : Vec2 -> JE.Value
+encodeVec2 vec =
+    JE.object
+        [ ( "x", vec |> getX |> JE.float )
+        , ( "y", vec |> getY |> JE.float )
+        ]
+
+
+postDecoder : JD.Decoder Post
+postDecoder =
+    JD.succeed Post
+        |> JDA.apply (JD.field "createdAt" JD.float)
+        |> JDA.apply (JD.field "direction" vec2Decoder)
+        |> JDA.apply (JD.field "origin" vec2Decoder)
+        |> JDA.apply (JD.field "msg" JD.string)
+
+
+encodePost : Post -> JE.Value
+encodePost post =
+    JE.object
+        [ ( "createdAt", JE.float post.createdAt )
+        , ( "direction", encodeVec2 post.direction )
+        , ( "origin", encodeVec2 post.direction )
+        , ( "msg", JE.string post.msg )
+        ]
+
+
+
+-- Server communication
+
+
+type ServerMsg
+    = NewIsland Island
+    | NewPost Post
+
+
+serverUrl : String
+serverUrl =
+    "ws://localhost:9998"
+
+
+encodeServerMsg : ServerMsg -> JE.Value
+encodeServerMsg msg =
+    case msg of
+        NewIsland island ->
+            JE.object
+                [ ( "type", JE.string "NewIsland" )
+                , ( "island", JE.string "NOT YET IMPLEMENTED" )
+                ]
+
+        NewPost post ->
+            JE.object
+                [ ( "type", JE.string "NewPost" )
+                , ( "post", encodePost post )
+                ]
+
+
+send : ServerMsg -> Cmd msg
+send msg =
+    msg
+        |> encodeServerMsg
+        |> JE.encode 0
+        |> WS.send serverUrl
 
 
 
@@ -206,6 +286,8 @@ type Msg
     | Resize Window.Size
     | Tick Time
     | SetTime Time
+      --
+    | ServerMsg String
 
 
 update : Msg -> Model -> Return Msg Model
@@ -260,27 +342,50 @@ update msg model =
                             (viewConfig model.time model.focus |> .size |> getX |> (*) relative.x)
                             (viewConfig model.time model.focus |> .size |> getY |> (*) relative.y)
                         )
-                        |> Debug.log "Click"
+
+                newPost =
+                    case model.focus of
+                        OneIsland island ->
+                            { createdAt = model.time
+                            , origin = island.position
+                            , direction = Vector2.direction worldPosition island.position
+                            , msg = "Hello!"
+                            }
+                                |> Just
+
+                        _ ->
+                            Nothing
             in
                 { model
                     | posts =
-                        case model.focus of
-                            OneIsland island ->
-                                { createdAt = model.time
-                                , origin = island.position
-                                , direction = Vector2.direction worldPosition island.position
-                                , msg = "Hello!"
-                                }
-                                    :: model.posts
+                        case newPost of
+                            Just post ->
+                                post :: model.posts
 
-                            _ ->
+                            Nothing ->
                                 model.posts
                 }
                     |> Return.singleton
+                    |> Return.command
+                        (case newPost of
+                            Just post ->
+                                post |> NewPost |> send
+
+                            Nothing ->
+                                Cmd.none
+                        )
 
         Resize size ->
             { model | windowSize = size }
                 |> Return.singleton
+
+        ServerMsg msg ->
+            let
+                msg_ =
+                    msg |> Debug.log "PusherMsg"
+            in
+                model
+                    |> Return.singleton
 
 
 updateFocus : Model -> Return Msg Model
@@ -319,6 +424,7 @@ subscriptions model =
     , Keyboard.presses KeyPress
     , Mouse.clicks Click
     , Window.resizes Resize
+    , WS.listen serverUrl ServerMsg
     ]
         |> Sub.batch
 
