@@ -57,6 +57,11 @@ wss.on('connection', function connection (ws) {
         events.emit('NewPost', msg.post)
         posts.push(msg.post)
         break
+
+      case 'Clear':
+        islands = []
+        posts = []
+        break
     }
   })
 })

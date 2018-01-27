@@ -168,6 +168,7 @@ encodePost post =
 type ServerMsg
     = NewIsland Island
     | NewPost Post
+    | Clear
 
 
 serverUrl : String
@@ -188,6 +189,11 @@ encodeServerMsg msg =
             JE.object
                 [ ( "type", JE.string "NewPost" )
                 , ( "post", encodePost post )
+                ]
+
+        Clear ->
+            JE.object
+                [ ( "type", JE.string "Clear" )
                 ]
 
 
@@ -389,10 +395,13 @@ update msg model =
             if keyCode == Char.toCode 'w' then
                 { model | focus = transitionFocus model model.focus World }
                     |> Return.singleton
-            else if keyCode == Char.toCode 'c' then
+            else if keyCode == Char.toCode 'i' then
                 model
                     |> Return.singleton
                     |> Return.command (islandGenerator model.islands |> Random.generate CreateIsland)
+            else if keyCode == Char.toCode 'c' then
+                init
+                    |> Return.command (Clear |> send)
             else
                 model
                     |> Return.singleton
@@ -465,6 +474,9 @@ update msg model =
                         (island) :: model.islands
             }
                 |> Return.singleton
+
+        ServerMsg (Ok Clear) ->
+            init
 
         ServerMsg (Err msg) ->
             let
