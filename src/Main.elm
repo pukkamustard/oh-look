@@ -189,6 +189,7 @@ init =
     }
         |> Return.singleton
         |> Return.command (Window.size |> Task.perform Resize)
+        |> Return.command (Time.now |> Task.perform SetTime)
 
 
 
@@ -203,6 +204,7 @@ type Msg
     | Click Mouse.Position
     | Resize Window.Size
     | Tick Time
+    | SetTime Time
 
 
 update : Msg -> Model -> Return Msg Model
@@ -225,6 +227,10 @@ update msg model =
             { model | time = model.time + dt }
                 |> Return.singleton
                 |> Return.andThen updateFocus
+
+        SetTime t ->
+            { model | time = t }
+                |> Return.singleton
 
         KeyPress keyCode ->
             if keyCode == Char.toCode 'w' then
