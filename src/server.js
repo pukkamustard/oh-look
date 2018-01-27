@@ -6,7 +6,19 @@ console.log('Server listening on port 9998')
 
 const events = new EventEmitter()
 
+var islands = []
+var posts = []
+
 wss.on('connection', function connection (ws) {
+  // Send list of exising islands posts
+  islands.map((island) => {
+    ws.send(JSON.stringify({type: 'NewIsland', island: island}))
+  })
+
+  posts.map((post) => {
+    ws.send(JSON.stringify({type: 'NewPost', post: post}))
+  })
+
   // Hook up to events
   const onNewPost = function (post) {
     ws.send(JSON.stringify({type: 'NewPost', post: post}))
@@ -38,10 +50,12 @@ wss.on('connection', function connection (ws) {
     switch (msg.type) {
       case 'NewIsland':
         events.emit('NewIsland', msg.island)
+        islands.push(msg.island)
         break
 
       case 'NewPost':
         events.emit('NewPost', msg.post)
+        posts.push(msg.post)
         break
     }
   })
