@@ -190,6 +190,7 @@ init =
         |> Return.singleton
         |> Return.command (Window.size |> Task.perform Resize)
         |> Return.command (Time.now |> Task.perform SetTime)
+        |> Return.command (islandGenerator [] |> Random.generate AddIsland)
 
 
 
