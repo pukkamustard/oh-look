@@ -4,6 +4,7 @@ import Return exposing (Return)
 import Random
 import Time exposing (Time)
 import Char
+import Task
 
 
 --
@@ -24,7 +25,9 @@ import Svg.Events as SE
 
 --
 
+import Window
 import Keyboard
+import Mouse
 
 
 main : Program Never Model Msg
@@ -54,8 +57,8 @@ TODO: check that not too close to existing islands
 islandGenerator : List Island -> Random.Generator Island
 islandGenerator islands =
     Random.map2 (\x y -> { position = vec2 x y })
-        (Random.float 0 (worldSize islands |> getX))
-        (Random.float 0 (worldSize islands |> getY))
+        (Random.float 0 (worldSize |> getX))
+        (Random.float 0 (worldSize |> getY))
 
 
 
@@ -90,8 +93,14 @@ type alias ViewConfig =
     }
 
 
-worldSize : List Island -> Vec2
-worldSize islands =
+topLeft : ViewConfig -> Vec2
+topLeft viewConfig =
+    viewConfig.center
+        |> Vector2.add (viewConfig.size |> Vector2.scale 0.5 |> Vector2.negate)
+
+
+worldSize : Vec2
+worldSize =
     vec2 5000 5000
 
 
@@ -100,12 +109,12 @@ islandWorldSize =
     vec2 500 500
 
 
-viewConfig : Model -> Focus -> ViewConfig
-viewConfig model focus =
+viewConfig : Time -> Focus -> ViewConfig
+viewConfig now focus =
     case focus of
         World ->
-            { size = worldSize model.islands
-            , center = worldSize model.islands |> Vector2.scale 0.5
+            { size = worldSize
+            , center = worldSize |> Vector2.scale 0.5
             }
 
         OneIsland island ->
@@ -114,7 +123,7 @@ viewConfig model focus =
             }
 
         Transitioning { viewConfig } ->
-            Animation.animate viewConfig model.time
+            Animation.animate viewConfig now
 
 
 towards : Vec2 -> Vec2 -> Float -> Vec2
@@ -129,10 +138,10 @@ transitionFocus model current to =
             model.time
 
         currentViewConfig =
-            viewConfig model current
+            viewConfig model.time current
 
         toViewConfig =
-            viewConfig model to
+            viewConfig model.time to
     in
         Transitioning
             { to = to
@@ -158,7 +167,11 @@ transitionFocus model current to =
 
 type alias Model =
     { time : Time
+    , windowSize : Window.Size
+
+    --
     , islands : List Island
+    , posts : List Post
     , focus : Focus
     }
 
@@ -166,11 +179,15 @@ type alias Model =
 init : Return Msg Model
 init =
     { time = 0
-    , islands =
-        []
+    , windowSize = { width = 100, height = 100 }
+
+    --
+    , islands = []
+    , posts = []
     , focus = World
     }
         |> Return.singleton
+        |> Return.command (Window.size |> Task.perform Resize)
 
 
 
@@ -182,6 +199,8 @@ type Msg
     | SelectIsland Island
       --
     | KeyPress Keyboard.KeyCode
+    | Click Mouse.Position
+    | Resize Window.Size
     | Tick Time
 
 
@@ -218,6 +237,41 @@ update msg model =
                 model
                     |> Return.singleton
 
+        Click position ->
+            let
+                relative =
+                    { x = (toFloat position.x / toFloat model.windowSize.width)
+                    , y = (toFloat position.y / toFloat model.windowSize.height)
+                    }
+
+                worldPosition =
+                    Vector2.add
+                        (viewConfig model.time model.focus |> topLeft)
+                        (vec2
+                            (viewConfig model.time model.focus |> .size |> getX |> (*) relative.x)
+                            (viewConfig model.time model.focus |> .size |> getY |> (*) relative.y)
+                        )
+                        |> Debug.log "Click"
+            in
+                { model
+                    | posts =
+                        case model.focus of
+                            OneIsland island ->
+                                { createdAt = model.time
+                                , origin = island.position
+                                , direction = Vector2.direction worldPosition island.position
+                                }
+                                    :: model.posts
+
+                            _ ->
+                                model.posts
+                }
+                    |> Return.singleton
+
+        Resize size ->
+            { model | windowSize = size }
+                |> Return.singleton
+
 
 updateFocus : Model -> Return Msg Model
 updateFocus model =
@@ -243,6 +297,8 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     [ AnimationFrame.diffs Tick
     , Keyboard.presses KeyPress
+    , Mouse.clicks Click
+    , Window.resizes Resize
     ]
         |> Sub.batch
 
@@ -255,18 +311,13 @@ subscriptions model =
 -}
 viewBoxHelper : ViewConfig -> String
 viewBoxHelper viewConfig =
-    let
-        topLeft =
-            viewConfig.center
-                |> Vector2.add (viewConfig.size |> Vector2.scale 0.5 |> Vector2.negate)
-    in
-        (topLeft |> getX |> toString)
-            ++ " "
-            ++ (topLeft |> getY |> toString)
-            ++ " "
-            ++ (viewConfig.size |> getX |> toString)
-            ++ " "
-            ++ (viewConfig.size |> getY |> toString)
+    (viewConfig |> topLeft |> getX |> toString)
+        ++ " "
+        ++ (viewConfig |> topLeft |> getY |> toString)
+        ++ " "
+        ++ (viewConfig.size |> getX |> toString)
+        ++ " "
+        ++ (viewConfig.size |> getY |> toString)
 
 
 view : Model -> H.Html Msg
@@ -276,13 +327,38 @@ view model =
         , SA.height "100vh"
         , SA.display "block"
         , model.focus
-            |> viewConfig model
+            |> viewConfig model.time
             |> viewBoxHelper
             |> SA.viewBox
         ]
-        (model.islands
+        ([ model.islands
             |> List.map (drawIsland model.focus)
+         , model.posts
+            |> List.map (drawPost model.time)
+         ]
+            |> List.concat
         )
+
+
+drawPost : Time -> Post -> S.Svg Msg
+drawPost now post =
+    let
+        speed =
+            0.05
+
+        position =
+            post.origin
+                |> Vector2.add
+                    (post.direction
+                        |> Vector2.scale (speed * (now - post.createdAt))
+                    )
+    in
+        S.circle
+            [ SA.cx (position |> getX |> toString)
+            , SA.cy (position |> getY |> toString)
+            , SA.r "10"
+            ]
+            []
 
 
 drawIsland : Focus -> Island -> S.Svg Msg
