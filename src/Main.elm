@@ -227,6 +227,7 @@ update msg model =
             { model | time = model.time + dt }
                 |> Return.singleton
                 |> Return.andThen updateFocus
+                |> Return.andThen dropFromTheFaceOfTheWorld
 
         SetTime t ->
             { model | time = t }
@@ -295,6 +296,16 @@ updateFocus model =
         _ ->
             model
                 |> Return.singleton
+
+
+dropFromTheFaceOfTheWorld : Model -> Return Msg Model
+dropFromTheFaceOfTheWorld model =
+    { model
+        | posts =
+            model.posts
+                |> List.filter (\post -> model.time - post.createdAt <= 2 * Time.minute)
+    }
+        |> Return.singleton
 
 
 
