@@ -11647,7 +11647,7 @@ var _user$project$Json_Decode_Applicative$pure = _elm_lang$core$Json_Decode$succ
 
 var _user$project$Main$drawPost = F2(
 	function (now, post) {
-		var size = 1;
+		var size = 0.5;
 		var speed = 5.0e-4;
 		var position = A2(
 			_elm_community$linear_algebra$Math_Vector2$add,

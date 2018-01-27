@@ -611,7 +611,7 @@ drawPost now post =
                     )
 
         size =
-            1
+            0.5
     in
         S.g []
             [ S.image
