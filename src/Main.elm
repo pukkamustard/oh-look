@@ -21,6 +21,7 @@ import Math.Vector2 as Vector2 exposing (Vec2, vec2, getX, getY)
 import Html as H
 import Svg as S
 import Svg.Attributes as SA
+import Svg.Events as SE
 
 
 --
@@ -132,7 +133,7 @@ encodeVec2 vec =
 postDecoder : JD.Decoder Post
 postDecoder =
     JD.succeed Post
-        |> JDA.apply (Uuid.decoder)
+        |> JDA.apply (JD.field "id" Uuid.decoder)
         |> JDA.apply (JD.field "createdAt" JD.float)
         |> JDA.apply (JD.field "direction" vec2Decoder)
         |> JDA.apply (JD.field "origin" vec2Decoder)
@@ -178,6 +179,21 @@ encodeServerMsg msg =
                 [ ( "type", JE.string "NewPost" )
                 , ( "post", encodePost post )
                 ]
+
+
+serverMsgDecoder : JD.Decoder ServerMsg
+serverMsgDecoder =
+    JD.field "type" JD.string
+        |> JD.andThen
+            (\type_ ->
+                case type_ of
+                    "NewPost" ->
+                        JD.succeed NewPost
+                            |> JDA.apply (JD.field "post" postDecoder)
+
+                    _ ->
+                        JD.fail "not implemented"
+            )
 
 
 send : ServerMsg -> Cmd msg
@@ -324,7 +340,7 @@ type Msg
     | Tick Time
     | SetTime Time
       --
-    | ServerMsg String
+    | ServerMsg (Result String ServerMsg)
 
 
 update : Msg -> Model -> Return Msg Model
@@ -416,10 +432,24 @@ update msg model =
             { model | windowSize = size }
                 |> Return.singleton
 
-        ServerMsg msg ->
+        ServerMsg (Ok (NewPost post)) ->
+            { model
+                | posts =
+                    if List.member post model.posts then
+                        model.posts
+                    else
+                        (post |> Debug.log "remote post!") :: model.posts
+            }
+                |> Return.singleton
+
+        ServerMsg (Ok _) ->
+            model
+                |> Return.singleton
+
+        ServerMsg (Err msg) ->
             let
                 msg_ =
-                    msg |> Debug.log "PusherMsg"
+                    msg |> Debug.log "ServerMsg decoding failed"
             in
                 model
                     |> Return.singleton
@@ -480,7 +510,7 @@ subscriptions model =
     , Keyboard.presses KeyPress
     , Mouse.clicks Click
     , Window.resizes Resize
-    , WS.listen serverUrl ServerMsg
+    , WS.listen serverUrl (JD.decodeString serverMsgDecoder >> ServerMsg)
     ]
         |> Sub.batch
 
@@ -557,12 +587,12 @@ drawPost now post =
                     )
     in
         S.g []
-            [ S.circle
-                [ SA.cx (position |> getX |> toString)
-                , SA.cy (position |> getY |> toString)
-                , SA.r "10"
-                , SA.stroke "Blue"
-                , SA.fill "none"
+            [ S.image
+                [ SA.xlinkHref "assets/bottle_01.png"
+                , SA.x (position |> getX |> (+) -25 |> toString)
+                , SA.y (position |> getY |> (+) -25 |> toString)
+                , SA.height "50"
+                , SA.width "50"
                 ]
                 []
             , S.text_
@@ -594,7 +624,12 @@ drawIsland now focus island =
                 []
     in
         S.g
-            [--SE.onClick (SelectIsland island)
+            [ case focus of
+                World ->
+                    SE.onClick (SelectIsland island)
+
+                _ ->
+                    SA.visibility "true"
             ]
             [ --image "assets/island_01_waterGradient.png"
               image (Animation.animate island.animation now)

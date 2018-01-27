@@ -15,7 +15,7 @@ wss.on('connection', function connection (ws) {
   // Hook up to events
   const eventListener = function (post) {
     // send something to client on event
-    ws.send(JSON.stringify(post))
+    ws.send(JSON.stringify({type: 'NewPost', post: post}))
   }
   events.on('new-post', eventListener)
 
