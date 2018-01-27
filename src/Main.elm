@@ -65,13 +65,13 @@ type alias Island =
 TODO: check that not too close to existing islands
 
 -}
-islandGenerator : Time -> List Island -> Random.Generator Island
-islandGenerator now islands =
+islandGenerator : List Island -> Random.Generator Island
+islandGenerator islands =
     Random.map3
         (\id x y ->
             { id = id
             , position = vec2 x y
-            , animation = islandAnimation now
+            , animation = Animation.static "assets/island_01_01.png"
             }
         )
         Uuid.uuidGenerator
@@ -305,7 +305,7 @@ init =
         |> Return.singleton
         |> Return.command (Window.size |> Task.perform Resize)
         |> Return.command (Time.now |> Task.perform SetTime)
-        |> Return.command (islandGenerator 0 [] |> Random.generate CreateIsland)
+        |> Return.command (islandGenerator [] |> Random.generate CreateIsland)
 
 
 
@@ -362,7 +362,7 @@ update msg model =
             else if keyCode == Char.toCode 'c' then
                 model
                     |> Return.singleton
-                    |> Return.command (islandGenerator model.time model.islands |> Random.generate CreateIsland)
+                    |> Return.command (islandGenerator model.islands |> Random.generate CreateIsland)
             else
                 model
                     |> Return.singleton
@@ -516,7 +516,9 @@ view model =
         ([ [ background ]
          , case model.focus of
             OneIsland island ->
-                [ island |> drawIsland model.time model.focus ]
+                model.islands
+                    |> List.filter (.id >> (==) island.id)
+                    |> List.map (drawIsland model.time model.focus)
 
             _ ->
                 model.islands
@@ -531,10 +533,10 @@ view model =
 background : S.Svg Msg
 background =
     S.rect
-        [ SA.x "0"
-        , SA.y "0"
-        , SA.height (worldSize |> getY |> toString)
-        , SA.width (worldSize |> getX |> toString)
+        [ SA.x "-1000"
+        , SA.y "-1000"
+        , SA.height (worldSize |> getY |> (+) 2000 |> toString)
+        , SA.width (worldSize |> getX |> (+) 2000 |> toString)
         , SA.fill "rgb(69,172,221)"
         , SA.opacity "0.5"
         ]
@@ -615,6 +617,12 @@ islandAnimation now =
             (1 * Time.second)
             (\c ->
                 images
-                    |> List.Extra.getAt (images |> List.length |> toFloat |> (*) c |> ceiling)
+                    |> List.Extra.getAt
+                        (images
+                            |> List.length
+                            |> toFloat
+                            |> (*) c
+                            |> floor
+                        )
                     |> Maybe.withDefault "assets/island_01_01.png"
             )
