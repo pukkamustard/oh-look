@@ -613,11 +613,6 @@ drawPost now post =
                 , SA.width "50"
                 ]
                 []
-            , S.text_
-                [ SA.x (position |> getX |> toString)
-                , SA.y (position |> getY |> toString)
-                ]
-                [ S.text post.msg ]
             ]
 
 
@@ -667,7 +662,7 @@ islandAnimation now =
             ]
     in
         Animation.animation now
-            (1 * Time.second)
+            (0.8 * Time.second)
             (\c ->
                 images
                     |> List.Extra.getAt
