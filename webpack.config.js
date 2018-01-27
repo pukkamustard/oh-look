@@ -4,8 +4,7 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
-  context: path.join(__dirname, 'src'),
-  entry: './index.js',
+  entry: './src/index.js',
 
   output: {
     path: path.join(__dirname, '/build'),
@@ -29,7 +28,9 @@ module.exports = {
     ]
   },
 
-  plugins: [new HtmlWebpackPlugin({title: 'The Island'})],
+  plugins: [new HtmlWebpackPlugin({
+    template: 'src/index.html'
+  })],
 
   devServer: {
     inline: true

@@ -114,7 +114,9 @@ postGenerator now origin direction msg =
     Random.map
         (\id ->
             { id = id
-            , createdAt = now
+
+            -- Hack to throw the bottle ahead a bit
+            , createdAt = now - 5000
             , direction = direction
             , origin = origin
             , msg = msg
@@ -154,7 +156,7 @@ encodePost post =
         [ ( "id", Uuid.encode post.id )
         , ( "createdAt", JE.float post.createdAt )
         , ( "direction", encodeVec2 post.direction )
-        , ( "origin", encodeVec2 post.direction )
+        , ( "origin", encodeVec2 post.origin )
         , ( "msg", JE.string post.msg )
         ]
 
@@ -170,7 +172,7 @@ type ServerMsg
 
 serverUrl : String
 serverUrl =
-    "ws://192.168.43.251:9998"
+    "ws://localhost:9998"
 
 
 encodeServerMsg : ServerMsg -> JE.Value
@@ -245,12 +247,12 @@ topLeft viewConfig =
 
 worldSize : Vec2
 worldSize =
-    vec2 10000 10000
+    vec2 100 100
 
 
 islandWorldSize : Vec2
 islandWorldSize =
-    vec2 500 500
+    vec2 10 10
 
 
 viewConfig : Time -> Focus -> ViewConfig
@@ -561,7 +563,8 @@ view model =
             |> viewBoxHelper
             |> SA.viewBox
         ]
-        ([ [ background ]
+        ([ preloadAssets
+         , [ background ]
          , case model.focus of
             OneIsland island ->
                 model.islands
@@ -578,15 +581,29 @@ view model =
         )
 
 
+preloadAssets : List (S.Svg Msg)
+preloadAssets =
+    let
+        image path id =
+            S.image [ SA.xlinkHref path, SA.id id ]
+                []
+    in
+        [ image "assets/island_01_01.png" "island01"
+        , image "assets/island_01_02.png" "island02"
+        , image "assets/island_01_03.png" "island03"
+        , image "assets/island_01_02.png" "island04"
+        , image "assets/island_01_waterGradient.png" "waterGradient"
+        ]
+
+
 background : S.Svg Msg
 background =
-    S.rect
-        [ SA.x "-1000"
+    S.image
+        [ SA.xlinkHref "assets/BackGroundBlue.png"
+        , SA.x "-1000"
         , SA.y "-1000"
-        , SA.height (worldSize |> getY |> (+) 2000 |> toString)
-        , SA.width (worldSize |> getX |> (+) 2000 |> toString)
-        , SA.fill "rgb(69,172,221)"
-        , SA.opacity "0.5"
+        , SA.height "2000"
+        , SA.width "2000"
         ]
         []
 
@@ -595,7 +612,7 @@ drawPost : Time -> Post -> S.Svg Msg
 drawPost now post =
     let
         speed =
-            0.05
+            0.0005
 
         position =
             post.origin
@@ -603,14 +620,17 @@ drawPost now post =
                     (post.direction
                         |> Vector2.scale (speed * (now - post.createdAt))
                     )
+
+        size =
+            1
     in
         S.g []
             [ S.image
                 [ SA.xlinkHref "assets/bottle_01.png"
-                , SA.x (position |> getX |> (+) -25 |> toString)
-                , SA.y (position |> getY |> (+) -25 |> toString)
-                , SA.height "50"
-                , SA.width "50"
+                , SA.x (position |> getX |> (+) (-size / 2) |> toString)
+                , SA.y (position |> getY |> (+) (-size / 2) |> toString)
+                , SA.height (size |> toString)
+                , SA.width (size |> toString)
                 ]
                 []
             ]
@@ -635,6 +655,11 @@ drawIsland now focus island =
             S.image
                 ([ SA.xlinkHref path ] ++ overlayAttributes)
                 []
+
+        imageId id =
+            S.use
+                ([ SA.xlinkHref ("#" ++ id) ] ++ overlayAttributes)
+                []
     in
         S.g
             [ case focus of
@@ -644,8 +669,8 @@ drawIsland now focus island =
                 _ ->
                     SA.visibility "true"
             ]
-            [ --image "assets/island_01_waterGradient.png"
-              image (Animation.animate island.animation now)
+            [ image "assets/island_01_waterGradient.png"
+            , image (Animation.animate island.animation now)
             , image "assets/character_01.png"
             , image "assets/palmTree_01_01.png"
             ]
