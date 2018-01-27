@@ -514,8 +514,13 @@ view model =
             |> SA.viewBox
         ]
         ([ [ background ]
-         , model.islands
-            |> List.map (drawIsland model.time model.focus)
+         , case model.focus of
+            OneIsland island ->
+                [ island |> drawIsland model.time model.focus ]
+
+            _ ->
+                model.islands
+                    |> List.map (drawIsland model.time model.focus)
          , model.posts
             |> List.map (drawPost model.time)
          ]
@@ -589,8 +594,8 @@ drawIsland now focus island =
         S.g
             [--SE.onClick (SelectIsland island)
             ]
-            [ image "assets/island_01_waterGradient.png"
-            , image (Animation.animate island.animation now)
+            [ --image "assets/island_01_waterGradient.png"
+              image (Animation.animate island.animation now)
             , image "assets/character_01.png"
             , image "assets/palmTree_01_01.png"
             ]
