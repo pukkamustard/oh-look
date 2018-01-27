@@ -102,7 +102,7 @@ topLeft viewConfig =
 
 worldSize : Vec2
 worldSize =
-    vec2 5000 5000
+    vec2 10000 10000
 
 
 islandWorldSize : Vec2
@@ -351,13 +351,27 @@ view model =
             |> viewBoxHelper
             |> SA.viewBox
         ]
-        ([ model.islands
+        ([ [ background ]
+         , model.islands
             |> List.map (drawIsland model.focus)
          , model.posts
             |> List.map (drawPost model.time)
          ]
             |> List.concat
         )
+
+
+background : S.Svg Msg
+background =
+    S.rect
+        [ SA.x "0"
+        , SA.y "0"
+        , SA.height (worldSize |> getY |> toString)
+        , SA.width (worldSize |> getX |> toString)
+        , SA.fill "aqua"
+        , SA.opacity "0.5"
+        ]
+        []
 
 
 drawPost : Time -> Post -> S.Svg Msg
