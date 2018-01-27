@@ -22,9 +22,14 @@ wss.on('connection', function connection (ws) {
     events.removeListener('someEvent', eventListener)
   })
 
+  ws.on('error', function () {
+    events.removeListener('someEvent', eventListener)
+  })
+
   // Handle messages from client
   ws.on('message', function incoming (raw) {
     const msg = JSON.parse(raw)
+    console.log(msg)
 
     switch (msg.type) {
       case 'NewIsland':

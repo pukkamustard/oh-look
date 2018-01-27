@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Return exposing (Return)
-import Random
+import Random.Pcg as Random
 import Time exposing (Time)
 import Char
 import Task
@@ -25,6 +25,7 @@ import Svg.Attributes as SA
 
 --
 
+import Uuid
 import WebSocket as WS
 import Json.Encode as JE
 import Json.Decode as JD
@@ -53,7 +54,8 @@ main =
 
 
 type alias Island =
-    { position : Vec2
+    { id : Uuid.Uuid
+    , position : Vec2
     , animation : Animation String
     }
 
@@ -65,14 +67,24 @@ TODO: check that not too close to existing islands
 -}
 islandGenerator : Time -> List Island -> Random.Generator Island
 islandGenerator now islands =
-    Random.map2
-        (\x y ->
-            { position = vec2 x y
+    Random.map3
+        (\id x y ->
+            { id = id
+            , position = vec2 x y
             , animation = islandAnimation now
             }
         )
+        Uuid.uuidGenerator
         (Random.float 0 (worldSize |> getX))
         (Random.float 0 (worldSize |> getY))
+
+
+encodeIsland : Island -> JE.Value
+encodeIsland island =
+    JE.object
+        [ ( "id", Uuid.encode island.id )
+        , ( "position", encodeVec2 island.position )
+        ]
 
 
 
@@ -141,7 +153,7 @@ encodeServerMsg msg =
         NewIsland island ->
             JE.object
                 [ ( "type", JE.string "NewIsland" )
-                , ( "island", JE.string "NOT YET IMPLEMENTED" )
+                , ( "island", encodeIsland island )
                 ]
 
         NewPost post ->
@@ -276,7 +288,7 @@ init =
         |> Return.singleton
         |> Return.command (Window.size |> Task.perform Resize)
         |> Return.command (Time.now |> Task.perform SetTime)
-        |> Return.command (islandGenerator 0 [] |> Random.generate AddIsland)
+        |> Return.command (islandGenerator 0 [] |> Random.generate CreateIsland)
 
 
 
@@ -284,7 +296,7 @@ init =
 
 
 type Msg
-    = AddIsland Island
+    = CreateIsland Island
     | SelectIsland Island
       --
     | KeyPress Keyboard.KeyCode
@@ -299,12 +311,13 @@ type Msg
 update : Msg -> Model -> Return Msg Model
 update msg model =
     case msg of
-        AddIsland island ->
+        CreateIsland island ->
             { model
                 | islands = island :: model.islands
                 , focus = transitionFocus model model.focus (OneIsland island)
             }
                 |> Return.singleton
+                |> Return.command (island |> NewIsland |> send)
 
         SelectIsland island ->
             { model
@@ -330,7 +343,7 @@ update msg model =
             else if keyCode == Char.toCode 'c' then
                 model
                     |> Return.singleton
-                    |> Return.command (islandGenerator model.time model.islands |> Random.generate AddIsland)
+                    |> Return.command (islandGenerator model.time model.islands |> Random.generate CreateIsland)
             else
                 model
                     |> Return.singleton
@@ -580,6 +593,5 @@ islandAnimation now =
             (\c ->
                 images
                     |> List.Extra.getAt (images |> List.length |> toFloat |> (*) c |> ceiling)
-                    --|> Maybe.withDefault "assets/island_01_01.png"
                     |> Maybe.withDefault ""
             )
