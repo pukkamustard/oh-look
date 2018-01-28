@@ -410,19 +410,22 @@ update msg model =
                 |> Return.singleton
 
         KeyPress keyCode ->
-            if keyCode == Char.toCode 'w' then
-                { model | focus = transitionFocus model model.focus World }
-                    |> Return.singleton
-            else if keyCode == Char.toCode 'i' then
-                model
-                    |> Return.singleton
-                    |> Return.command (islandGenerator model.islands |> Random.generate CreateIsland)
-            else if keyCode == Char.toCode 'c' then
-                init
-                    |> Return.command (Clear |> send)
-            else
-                model
-                    |> Return.singleton
+            case model.focus of
+                World ->
+                    if keyCode == Char.toCode 'i' then
+                        model
+                            |> Return.singleton
+                            |> Return.command (islandGenerator model.islands |> Random.generate CreateIsland)
+                    else if keyCode == Char.toCode 'c' then
+                        init
+                            |> Return.command (Clear |> send)
+                    else
+                        model
+                            |> Return.singleton
+
+                _ ->
+                    model
+                        |> Return.singleton
 
         UpdatePostMsg msg ->
             case model.focus of
@@ -437,12 +440,16 @@ update msg model =
         SendPost ->
             case model.focus of
                 Writing { island, direction, msg } ->
-                    { model | focus = OneIsland island }
-                        |> Return.singleton
-                        |> Return.command
-                            (postGenerator model.time island.position direction msg
-                                |> Random.generate CreatePost
-                            )
+                    if msg == "marco polo" then
+                        { model | focus = transitionFocus model model.focus World }
+                            |> Return.singleton
+                    else
+                        { model | focus = OneIsland island }
+                            |> Return.singleton
+                            |> Return.command
+                                (postGenerator model.time island.position direction msg
+                                    |> Random.generate CreatePost
+                                )
 
                 _ ->
                     model
