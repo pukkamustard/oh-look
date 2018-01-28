@@ -921,10 +921,10 @@ background : S.Svg Msg
 background =
     S.image
         [ SA.xlinkHref "assets/BackGroundBlue.png"
-        , SA.x "-1000"
-        , SA.y "-1000"
-        , SA.height "2000"
-        , SA.width "2000"
+        , SA.x "-100"
+        , SA.y "-100"
+        , SA.height "200"
+        , SA.width "200"
         ]
         []
 
