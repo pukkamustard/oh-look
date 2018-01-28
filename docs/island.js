@@ -12202,7 +12202,31 @@ var _user$project$Main$preloadAssets = function () {
 												_1: {
 													ctor: '::',
 													_0: image('assets/writingInterface_water_04.png'),
-													_1: {ctor: '[]'}
+													_1: {
+														ctor: '::',
+														_0: image('assets/readingInterface_background.png'),
+														_1: {
+															ctor: '::',
+															_0: image('assets/readingInterface_bottle.png'),
+															_1: {
+																ctor: '::',
+																_0: image('assets/readingInterface_water_01.png'),
+																_1: {
+																	ctor: '::',
+																	_0: image('assets/readingInterface_water_02.png'),
+																	_1: {
+																		ctor: '::',
+																		_0: image('assets/readingInterface_water_03.png'),
+																		_1: {
+																			ctor: '::',
+																			_0: image('assets/readingInterface_water_04.png'),
+																			_1: {ctor: '[]'}
+																		}
+																	}
+																}
+															}
+														}
+													}
 												}
 											}
 										}

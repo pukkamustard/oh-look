@@ -908,6 +908,12 @@ preloadAssets =
             , image "assets/writingInterface_water_02.png"
             , image "assets/writingInterface_water_03.png"
             , image "assets/writingInterface_water_04.png"
+            , image "assets/readingInterface_background.png"
+            , image "assets/readingInterface_bottle.png"
+            , image "assets/readingInterface_water_01.png"
+            , image "assets/readingInterface_water_02.png"
+            , image "assets/readingInterface_water_03.png"
+            , image "assets/readingInterface_water_04.png"
             ]
 
 
