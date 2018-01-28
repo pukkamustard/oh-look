@@ -923,8 +923,8 @@ background =
         [ SA.xlinkHref "assets/BackGroundBlue.png"
         , SA.x "-100"
         , SA.y "-100"
-        , SA.height "200"
-        , SA.width "200"
+        , SA.height "400"
+        , SA.width "400"
         ]
         []
 
