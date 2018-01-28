@@ -67,8 +67,25 @@
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Elm = __webpack_require__(1)
-Elm.Main.fullscreen()
+const Elm = __webpack_require__(1)
+
+function enterFullscreen (element) {
+  if (element.requestFullscreen) {
+    element.requestFullscreen()
+  } else if (element.mozRequestFullScreen) {
+    element.mozRequestFullScreen()
+  } else if (element.msRequestFullscreen) {
+    element.msRequestFullscreen()
+  } else if (element.webkitRequestFullscreen) {
+    element.webkitRequestFullscreen()
+  }
+}
+
+document.getElementById('start-button').addEventListener('click', () => {
+  document.getElementById('pre-page').style.display = 'none'
+  enterFullscreen(document.documentElement)
+  Elm.Main.fullscreen()
+})
 
 
 /***/ }),
@@ -12645,7 +12662,14 @@ var _user$project$Main$subscriptions = function (model) {
 					_0: _elm_lang$keyboard$Keyboard$presses(_user$project$Main$KeyPress),
 					_1: {
 						ctor: '::',
-						_0: _elm_lang$mouse$Mouse$clicks(_user$project$Main$Click),
+						_0: function () {
+							var _p7 = model.focus;
+							if (_p7.ctor === 'OneIsland') {
+								return _elm_lang$mouse$Mouse$clicks(_user$project$Main$Click);
+							} else {
+								return _elm_lang$core$Platform_Sub$none;
+							}
+						}(),
 						_1: {
 							ctor: '::',
 							_0: _elm_lang$window$Window$resizes(_user$project$Main$Resize),
@@ -12654,9 +12678,9 @@ var _user$project$Main$subscriptions = function (model) {
 								_0: A2(
 									_elm_lang$websocket$WebSocket$listen,
 									_user$project$Main$serverUrl,
-									function (_p7) {
+									function (_p8) {
 										return _user$project$Main$ServerMsg(
-											A2(_elm_lang$core$Json_Decode$decodeString, _user$project$Main$serverMsgDecoder, _p7));
+											A2(_elm_lang$core$Json_Decode$decodeString, _user$project$Main$serverMsgDecoder, _p8));
 									}),
 								_1: {ctor: '[]'}
 							}
@@ -12667,8 +12691,8 @@ var _user$project$Main$subscriptions = function (model) {
 		});
 };
 var _user$project$Main$GoBackToIsland = {ctor: 'GoBackToIsland'};
-var _user$project$Main$readingInterface = function (_p8) {
-	var _p9 = _p8;
+var _user$project$Main$readingInterface = function (_p9) {
+	var _p10 = _p9;
 	var overlayAttributes = {
 		ctor: '::',
 		_0: _elm_lang$svg$Svg_Attributes$x('0'),
@@ -12963,7 +12987,7 @@ var _user$project$Main$readingInterface = function (_p8) {
 									_0: _elm_lang$html$Html_Attributes$id('msgInput'),
 									_1: {
 										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$value(_p9.post.msg),
+										_0: _elm_lang$html$Html_Attributes$value(_p10.post.msg),
 										_1: {
 											ctor: '::',
 											_0: _elm_lang$html$Html_Attributes$readonly(true),
@@ -13056,8 +13080,8 @@ var _user$project$Main$SendPost = {ctor: 'SendPost'};
 var _user$project$Main$UpdatePostMsg = function (a) {
 	return {ctor: 'UpdatePostMsg', _0: a};
 };
-var _user$project$Main$writingInterface = function (_p10) {
-	var _p11 = _p10;
+var _user$project$Main$writingInterface = function (_p11) {
+	var _p12 = _p11;
 	var overlayAttributes = {
 		ctor: '::',
 		_0: _elm_lang$svg$Svg_Attributes$x('0'),
@@ -13280,7 +13304,11 @@ var _user$project$Main$writingInterface = function (_p10) {
 							_1: {
 								ctor: '::',
 								_0: _elm_lang$svg$Svg_Attributes$viewBox('0 0 16 9'),
-								_1: {ctor: '[]'}
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$svg$Svg_Events$onClick(_user$project$Main$SendPost),
+									_1: {ctor: '[]'}
+								}
 							}
 						}
 					}
@@ -13294,7 +13322,29 @@ var _user$project$Main$writingInterface = function (_p10) {
 					_1: {
 						ctor: '::',
 						_0: waterAnimation,
-						_1: {ctor: '[]'}
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$svg$Svg$image,
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									{
+										ctor: '::',
+										_0: _elm_lang$svg$Svg_Attributes$xlinkHref('assets/send_bottle_button.png'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$svg$Svg_Attributes$order('10'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$svg$Svg_Events$onClick(_user$project$Main$SendPost),
+												_1: {ctor: '[]'}
+											}
+										}
+									},
+									overlayAttributes),
+								{ctor: '[]'}),
+							_1: {ctor: '[]'}
+						}
 					}
 				}),
 			_1: {
@@ -13352,10 +13402,10 @@ var _user$project$Main$writingInterface = function (_p10) {
 									_0: _elm_lang$html$Html_Attributes$autofocus(true),
 									_1: {
 										ctor: '::',
-										_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$UpdatePostMsg),
+										_0: _elm_lang$html$Html_Attributes$placeholder('...'),
 										_1: {
 											ctor: '::',
-											_0: _elm_lang$html$Html_Events$onBlur(_user$project$Main$SendPost),
+											_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$UpdatePostMsg),
 											_1: {ctor: '[]'}
 										}
 									}
@@ -13588,8 +13638,8 @@ var _user$project$Main$drawIsland = F3(
 			{
 				ctor: '::',
 				_0: function () {
-					var _p12 = focus;
-					if (_p12.ctor === 'World') {
+					var _p13 = focus;
+					if (_p13.ctor === 'World') {
 						return _elm_lang$svg$Svg_Events$onClick(
 							_user$project$Main$SelectIsland(island));
 					} else {
@@ -13635,12 +13685,12 @@ var _user$project$Main$view = function (model) {
 			_1: {
 				ctor: '::',
 				_0: function () {
-					var _p13 = model.focus;
-					switch (_p13.ctor) {
+					var _p14 = model.focus;
+					switch (_p14.ctor) {
 						case 'Writing':
-							return _user$project$Main$writingInterface(_p13._0);
+							return _user$project$Main$writingInterface(_p14._0);
 						case 'Reading':
-							return _user$project$Main$readingInterface(_p13._0);
+							return _user$project$Main$readingInterface(_p14._0);
 						default:
 							return A2(
 								_elm_lang$svg$Svg$svg,
@@ -13674,23 +13724,23 @@ var _user$project$Main$view = function (model) {
 										_1: {
 											ctor: '::',
 											_0: function () {
-												var _p14 = model.focus;
-												if (_p14.ctor === 'OneIsland') {
+												var _p15 = model.focus;
+												if (_p15.ctor === 'OneIsland') {
 													return A2(
 														_elm_lang$core$List$map,
 														A2(_user$project$Main$drawIsland, model.time, model.focus),
 														A2(
 															_elm_lang$core$List$filter,
-															function (_p15) {
+															function (_p16) {
 																return A2(
 																	F2(
 																		function (x, y) {
 																			return _elm_lang$core$Native_Utils.eq(x, y);
 																		}),
-																	_p14._0.id,
+																	_p15._0.id,
 																	function (_) {
 																		return _.id;
-																	}(_p15));
+																	}(_p16));
 															},
 															model.islands));
 												} else {
@@ -13742,29 +13792,29 @@ var _user$project$Main$init = A2(
 				}))));
 var _user$project$Main$update = F2(
 	function (msg, model) {
-		var _p16 = msg;
-		switch (_p16.ctor) {
+		var _p17 = msg;
+		switch (_p17.ctor) {
 			case 'CreateIsland':
-				var _p18 = _p16._0;
+				var _p19 = _p17._0;
 				return A2(
 					_Fresheyeball$elm_return$Return$command,
 					_user$project$Main$send(
-						_user$project$Main$NewIsland(_p18)),
+						_user$project$Main$NewIsland(_p19)),
 					_Fresheyeball$elm_return$Return$singleton(
 						_elm_lang$core$Native_Utils.update(
 							model,
 							{
-								islands: {ctor: '::', _0: _p18, _1: model.islands},
+								islands: {ctor: '::', _0: _p19, _1: model.islands},
 								focus: function () {
-									var _p17 = model.focus;
-									if (_p17.ctor === 'World') {
+									var _p18 = model.focus;
+									if (_p18.ctor === 'World') {
 										return A3(
 											_user$project$Main$transitionFocus,
 											model,
 											model.focus,
-											_user$project$Main$OneIsland(_p18));
+											_user$project$Main$OneIsland(_p19));
 									} else {
-										return _user$project$Main$OneIsland(_p18);
+										return _user$project$Main$OneIsland(_p19);
 									}
 								}()
 							})));
@@ -13777,7 +13827,7 @@ var _user$project$Main$update = F2(
 								_user$project$Main$transitionFocus,
 								model,
 								model.focus,
-								_user$project$Main$OneIsland(_p16._0))
+								_user$project$Main$OneIsland(_p17._0))
 						}));
 			case 'Tick':
 				return A2(
@@ -13786,7 +13836,7 @@ var _user$project$Main$update = F2(
 					_Fresheyeball$elm_return$Return$singleton(
 						_elm_lang$core$Native_Utils.update(
 							model,
-							{time: model.time + _p16._0})));
+							{time: model.time + _p17._0})));
 			case 'CleanUp':
 				return A2(
 					_Fresheyeball$elm_return$Return$andThen,
@@ -13796,13 +13846,13 @@ var _user$project$Main$update = F2(
 				return _Fresheyeball$elm_return$Return$singleton(
 					_elm_lang$core$Native_Utils.update(
 						model,
-						{time: _p16._0}));
+						{time: _p17._0}));
 			case 'KeyPress':
-				var _p20 = _p16._0;
-				var _p19 = model.focus;
-				if (_p19.ctor === 'World') {
+				var _p21 = _p17._0;
+				var _p20 = model.focus;
+				if (_p20.ctor === 'World') {
 					return _elm_lang$core$Native_Utils.eq(
-						_p20,
+						_p21,
 						_elm_lang$core$Char$toCode(
 							_elm_lang$core$Native_Utils.chr('i'))) ? A2(
 						_Fresheyeball$elm_return$Return$command,
@@ -13811,7 +13861,7 @@ var _user$project$Main$update = F2(
 							_user$project$Main$CreateIsland,
 							_user$project$Main$islandGenerator(model.islands)),
 						_Fresheyeball$elm_return$Return$singleton(model)) : (_elm_lang$core$Native_Utils.eq(
-						_p20,
+						_p21,
 						_elm_lang$core$Char$toCode(
 							_elm_lang$core$Native_Utils.chr('c'))) ? A2(
 						_Fresheyeball$elm_return$Return$command,
@@ -13821,26 +13871,26 @@ var _user$project$Main$update = F2(
 					return _Fresheyeball$elm_return$Return$singleton(model);
 				}
 			case 'UpdatePostMsg':
-				var _p21 = model.focus;
-				if (_p21.ctor === 'Writing') {
+				var _p22 = model.focus;
+				if (_p22.ctor === 'Writing') {
 					return _Fresheyeball$elm_return$Return$singleton(
 						_elm_lang$core$Native_Utils.update(
 							model,
 							{
 								focus: _user$project$Main$Writing(
 									_elm_lang$core$Native_Utils.update(
-										_p21._0,
-										{msg: _p16._0}))
+										_p22._0,
+										{msg: _p17._0}))
 							}));
 				} else {
 					return _Fresheyeball$elm_return$Return$singleton(model);
 				}
 			case 'SendPost':
-				var _p22 = model.focus;
-				if (_p22.ctor === 'Writing') {
-					var _p24 = _p22._0.msg;
-					var _p23 = _p22._0.island;
-					return _elm_lang$core$Native_Utils.eq(_p24, 'marco polo') ? _Fresheyeball$elm_return$Return$singleton(
+				var _p23 = model.focus;
+				if (_p23.ctor === 'Writing') {
+					var _p25 = _p23._0.msg;
+					var _p24 = _p23._0.island;
+					return _elm_lang$core$Native_Utils.eq(_p25, 'marco polo') ? _Fresheyeball$elm_return$Return$singleton(
 						_elm_lang$core$Native_Utils.update(
 							model,
 							{
@@ -13850,61 +13900,61 @@ var _user$project$Main$update = F2(
 						A2(
 							_mgold$elm_random_pcg$Random_Pcg$generate,
 							_user$project$Main$CreatePost,
-							A4(_user$project$Main$postGenerator, model.time, _p23.position, _p22._0.direction, _p24)),
+							A4(_user$project$Main$postGenerator, model.time, _p24.position, _p23._0.direction, _p25)),
 						_Fresheyeball$elm_return$Return$singleton(
 							_elm_lang$core$Native_Utils.update(
 								model,
 								{
-									focus: _user$project$Main$OneIsland(_p23)
+									focus: _user$project$Main$OneIsland(_p24)
 								})));
 				} else {
 					return _Fresheyeball$elm_return$Return$singleton(model);
 				}
 			case 'CreatePost':
-				var _p25 = _p16._0;
+				var _p26 = _p17._0;
 				return A2(
 					_Fresheyeball$elm_return$Return$command,
 					_user$project$Main$send(
-						_user$project$Main$NewPost(_p25)),
+						_user$project$Main$NewPost(_p26)),
 					_Fresheyeball$elm_return$Return$singleton(
 						_elm_lang$core$Native_Utils.update(
 							model,
 							{
-								posts: {ctor: '::', _0: _p25, _1: model.posts}
+								posts: {ctor: '::', _0: _p26, _1: model.posts}
 							})));
 			case 'ViewPost':
-				var _p26 = model.focus;
-				if (_p26.ctor === 'OneIsland') {
+				var _p27 = model.focus;
+				if (_p27.ctor === 'OneIsland') {
 					return _Fresheyeball$elm_return$Return$singleton(
 						_elm_lang$core$Native_Utils.update(
 							model,
 							{
 								focus: _user$project$Main$Reading(
-									{island: _p26._0, post: _p16._0})
+									{island: _p27._0, post: _p17._0})
 							}));
 				} else {
 					return _Fresheyeball$elm_return$Return$singleton(model);
 				}
 			case 'GoBackToIsland':
-				var _p27 = model.focus;
-				if (_p27.ctor === 'Reading') {
+				var _p28 = model.focus;
+				if (_p28.ctor === 'Reading') {
 					return _Fresheyeball$elm_return$Return$singleton(
 						_elm_lang$core$Native_Utils.update(
 							model,
 							{
-								focus: _user$project$Main$OneIsland(_p27._0.island)
+								focus: _user$project$Main$OneIsland(_p28._0.island)
 							}));
 				} else {
 					return _Fresheyeball$elm_return$Return$singleton(model);
 				}
 			case 'Click':
-				var _p30 = _p16._0;
-				var _p28 = model.focus;
-				if (_p28.ctor === 'OneIsland') {
-					var _p29 = _p28._0;
+				var _p31 = _p17._0;
+				var _p29 = model.focus;
+				if (_p29.ctor === 'OneIsland') {
+					var _p30 = _p29._0;
 					var relative = {
-						x: _elm_lang$core$Basics$toFloat(_p30.x) / _elm_lang$core$Basics$toFloat(model.windowSize.width),
-						y: _elm_lang$core$Basics$toFloat(_p30.y) / _elm_lang$core$Basics$toFloat(model.windowSize.height)
+						x: _elm_lang$core$Basics$toFloat(_p31.x) / _elm_lang$core$Basics$toFloat(model.windowSize.width),
+						y: _elm_lang$core$Basics$toFloat(_p31.y) / _elm_lang$core$Basics$toFloat(model.windowSize.height)
 					};
 					var worldPosition = A2(
 						_elm_community$linear_algebra$Math_Vector2$add,
@@ -13934,13 +13984,13 @@ var _user$project$Main$update = F2(
 										return _.size;
 									}(
 										A2(_user$project$Main$viewConfig, model.time, model.focus))))));
-					var direction = A2(_elm_community$linear_algebra$Math_Vector2$direction, worldPosition, _p29.position);
+					var direction = A2(_elm_community$linear_algebra$Math_Vector2$direction, worldPosition, _p30.position);
 					return _Fresheyeball$elm_return$Return$singleton(
 						_elm_lang$core$Native_Utils.update(
 							model,
 							{
 								focus: _user$project$Main$Writing(
-									{island: _p29, direction: direction, msg: ''})
+									{island: _p30, direction: direction, msg: ''})
 							}));
 				} else {
 					return _Fresheyeball$elm_return$Return$singleton(model);
@@ -13949,31 +13999,31 @@ var _user$project$Main$update = F2(
 				return _Fresheyeball$elm_return$Return$singleton(
 					_elm_lang$core$Native_Utils.update(
 						model,
-						{windowSize: _p16._0}));
+						{windowSize: _p17._0}));
 			default:
-				if (_p16._0.ctor === 'Ok') {
-					switch (_p16._0._0.ctor) {
+				if (_p17._0.ctor === 'Ok') {
+					switch (_p17._0._0.ctor) {
 						case 'NewPost':
-							var _p31 = _p16._0._0._0;
+							var _p32 = _p17._0._0._0;
 							return _Fresheyeball$elm_return$Return$singleton(
 								_elm_lang$core$Native_Utils.update(
 									model,
 									{
-										posts: A2(_elm_lang$core$List$member, _p31, model.posts) ? model.posts : {ctor: '::', _0: _p31, _1: model.posts}
+										posts: A2(_elm_lang$core$List$member, _p32, model.posts) ? model.posts : {ctor: '::', _0: _p32, _1: model.posts}
 									}));
 						case 'NewIsland':
-							var _p32 = _p16._0._0._0;
+							var _p33 = _p17._0._0._0;
 							return _Fresheyeball$elm_return$Return$singleton(
 								_elm_lang$core$Native_Utils.update(
 									model,
 									{
-										islands: A2(_elm_lang$core$List$member, _p32, model.islands) ? model.islands : {ctor: '::', _0: _p32, _1: model.islands}
+										islands: A2(_elm_lang$core$List$member, _p33, model.islands) ? model.islands : {ctor: '::', _0: _p33, _1: model.islands}
 									}));
 						default:
 							return _user$project$Main$init;
 					}
 				} else {
-					var msg_ = A2(_elm_lang$core$Debug$log, 'ServerMsg decoding failed', _p16._0._0);
+					var msg_ = A2(_elm_lang$core$Debug$log, 'ServerMsg decoding failed', _p17._0._0);
 					return _Fresheyeball$elm_return$Return$singleton(model);
 				}
 		}
