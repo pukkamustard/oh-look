@@ -611,7 +611,12 @@ subscriptions model =
             Time.every (250 * Time.millisecond) (always <| Tick 250)
     , Time.every (10 * Time.second) (always CleanUp)
     , Keyboard.presses KeyPress
-    , Mouse.clicks Click
+    , case model.focus of
+        OneIsland _ ->
+            Mouse.clicks Click
+
+        _ ->
+            Sub.none
     , Window.resizes Resize
     , WS.listen serverUrl (JD.decodeString serverMsgDecoder >> ServerMsg)
     ]
@@ -847,9 +852,18 @@ writingInterface { island, direction, msg } =
                 , SA.height "100%"
                 , SA.display "block"
                 , SA.viewBox "0 0 16 9"
+                , SE.onClick SendPost
                 ]
                 [ image "assets/writingInterface_noWater_Background.png" []
                 , waterAnimation
+                , S.image
+                    ([ SA.xlinkHref "assets/send_bottle_button.png"
+                     , SA.order "10"
+                     , SE.onClick SendPost
+                     ]
+                        ++ overlayAttributes
+                    )
+                    []
                 ]
             , H.textarea
                 [ HA.style
@@ -866,8 +880,8 @@ writingInterface { island, direction, msg } =
                 , HA.rows 5
                 , HA.cols 10
                 , HA.autofocus True
+                , HA.placeholder "..."
                 , HE.onInput UpdatePostMsg
-                , HE.onBlur SendPost
                 ]
                 []
             ]
