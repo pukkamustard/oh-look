@@ -10162,6 +10162,471 @@ var _elm_lang$html$Html$summary = _elm_lang$html$Html$node('summary');
 var _elm_lang$html$Html$menuitem = _elm_lang$html$Html$node('menuitem');
 var _elm_lang$html$Html$menu = _elm_lang$html$Html$node('menu');
 
+var _elm_lang$html$Html_Attributes$map = _elm_lang$virtual_dom$VirtualDom$mapProperty;
+var _elm_lang$html$Html_Attributes$attribute = _elm_lang$virtual_dom$VirtualDom$attribute;
+var _elm_lang$html$Html_Attributes$contextmenu = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'contextmenu', value);
+};
+var _elm_lang$html$Html_Attributes$draggable = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'draggable', value);
+};
+var _elm_lang$html$Html_Attributes$itemprop = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'itemprop', value);
+};
+var _elm_lang$html$Html_Attributes$tabindex = function (n) {
+	return A2(
+		_elm_lang$html$Html_Attributes$attribute,
+		'tabIndex',
+		_elm_lang$core$Basics$toString(n));
+};
+var _elm_lang$html$Html_Attributes$charset = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'charset', value);
+};
+var _elm_lang$html$Html_Attributes$height = function (value) {
+	return A2(
+		_elm_lang$html$Html_Attributes$attribute,
+		'height',
+		_elm_lang$core$Basics$toString(value));
+};
+var _elm_lang$html$Html_Attributes$width = function (value) {
+	return A2(
+		_elm_lang$html$Html_Attributes$attribute,
+		'width',
+		_elm_lang$core$Basics$toString(value));
+};
+var _elm_lang$html$Html_Attributes$formaction = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'formAction', value);
+};
+var _elm_lang$html$Html_Attributes$list = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'list', value);
+};
+var _elm_lang$html$Html_Attributes$minlength = function (n) {
+	return A2(
+		_elm_lang$html$Html_Attributes$attribute,
+		'minLength',
+		_elm_lang$core$Basics$toString(n));
+};
+var _elm_lang$html$Html_Attributes$maxlength = function (n) {
+	return A2(
+		_elm_lang$html$Html_Attributes$attribute,
+		'maxlength',
+		_elm_lang$core$Basics$toString(n));
+};
+var _elm_lang$html$Html_Attributes$size = function (n) {
+	return A2(
+		_elm_lang$html$Html_Attributes$attribute,
+		'size',
+		_elm_lang$core$Basics$toString(n));
+};
+var _elm_lang$html$Html_Attributes$form = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'form', value);
+};
+var _elm_lang$html$Html_Attributes$cols = function (n) {
+	return A2(
+		_elm_lang$html$Html_Attributes$attribute,
+		'cols',
+		_elm_lang$core$Basics$toString(n));
+};
+var _elm_lang$html$Html_Attributes$rows = function (n) {
+	return A2(
+		_elm_lang$html$Html_Attributes$attribute,
+		'rows',
+		_elm_lang$core$Basics$toString(n));
+};
+var _elm_lang$html$Html_Attributes$challenge = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'challenge', value);
+};
+var _elm_lang$html$Html_Attributes$media = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'media', value);
+};
+var _elm_lang$html$Html_Attributes$rel = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'rel', value);
+};
+var _elm_lang$html$Html_Attributes$datetime = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'datetime', value);
+};
+var _elm_lang$html$Html_Attributes$pubdate = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'pubdate', value);
+};
+var _elm_lang$html$Html_Attributes$colspan = function (n) {
+	return A2(
+		_elm_lang$html$Html_Attributes$attribute,
+		'colspan',
+		_elm_lang$core$Basics$toString(n));
+};
+var _elm_lang$html$Html_Attributes$rowspan = function (n) {
+	return A2(
+		_elm_lang$html$Html_Attributes$attribute,
+		'rowspan',
+		_elm_lang$core$Basics$toString(n));
+};
+var _elm_lang$html$Html_Attributes$manifest = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'manifest', value);
+};
+var _elm_lang$html$Html_Attributes$property = _elm_lang$virtual_dom$VirtualDom$property;
+var _elm_lang$html$Html_Attributes$stringProperty = F2(
+	function (name, string) {
+		return A2(
+			_elm_lang$html$Html_Attributes$property,
+			name,
+			_elm_lang$core$Json_Encode$string(string));
+	});
+var _elm_lang$html$Html_Attributes$class = function (name) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'className', name);
+};
+var _elm_lang$html$Html_Attributes$id = function (name) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'id', name);
+};
+var _elm_lang$html$Html_Attributes$title = function (name) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'title', name);
+};
+var _elm_lang$html$Html_Attributes$accesskey = function ($char) {
+	return A2(
+		_elm_lang$html$Html_Attributes$stringProperty,
+		'accessKey',
+		_elm_lang$core$String$fromChar($char));
+};
+var _elm_lang$html$Html_Attributes$dir = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'dir', value);
+};
+var _elm_lang$html$Html_Attributes$dropzone = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'dropzone', value);
+};
+var _elm_lang$html$Html_Attributes$lang = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'lang', value);
+};
+var _elm_lang$html$Html_Attributes$content = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'content', value);
+};
+var _elm_lang$html$Html_Attributes$httpEquiv = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'httpEquiv', value);
+};
+var _elm_lang$html$Html_Attributes$language = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'language', value);
+};
+var _elm_lang$html$Html_Attributes$src = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'src', value);
+};
+var _elm_lang$html$Html_Attributes$alt = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'alt', value);
+};
+var _elm_lang$html$Html_Attributes$preload = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'preload', value);
+};
+var _elm_lang$html$Html_Attributes$poster = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'poster', value);
+};
+var _elm_lang$html$Html_Attributes$kind = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'kind', value);
+};
+var _elm_lang$html$Html_Attributes$srclang = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'srclang', value);
+};
+var _elm_lang$html$Html_Attributes$sandbox = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'sandbox', value);
+};
+var _elm_lang$html$Html_Attributes$srcdoc = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'srcdoc', value);
+};
+var _elm_lang$html$Html_Attributes$type_ = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'type', value);
+};
+var _elm_lang$html$Html_Attributes$value = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'value', value);
+};
+var _elm_lang$html$Html_Attributes$defaultValue = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'defaultValue', value);
+};
+var _elm_lang$html$Html_Attributes$placeholder = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'placeholder', value);
+};
+var _elm_lang$html$Html_Attributes$accept = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'accept', value);
+};
+var _elm_lang$html$Html_Attributes$acceptCharset = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'acceptCharset', value);
+};
+var _elm_lang$html$Html_Attributes$action = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'action', value);
+};
+var _elm_lang$html$Html_Attributes$autocomplete = function (bool) {
+	return A2(
+		_elm_lang$html$Html_Attributes$stringProperty,
+		'autocomplete',
+		bool ? 'on' : 'off');
+};
+var _elm_lang$html$Html_Attributes$enctype = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'enctype', value);
+};
+var _elm_lang$html$Html_Attributes$method = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'method', value);
+};
+var _elm_lang$html$Html_Attributes$name = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'name', value);
+};
+var _elm_lang$html$Html_Attributes$pattern = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'pattern', value);
+};
+var _elm_lang$html$Html_Attributes$for = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'htmlFor', value);
+};
+var _elm_lang$html$Html_Attributes$max = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'max', value);
+};
+var _elm_lang$html$Html_Attributes$min = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'min', value);
+};
+var _elm_lang$html$Html_Attributes$step = function (n) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'step', n);
+};
+var _elm_lang$html$Html_Attributes$wrap = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'wrap', value);
+};
+var _elm_lang$html$Html_Attributes$usemap = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'useMap', value);
+};
+var _elm_lang$html$Html_Attributes$shape = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'shape', value);
+};
+var _elm_lang$html$Html_Attributes$coords = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'coords', value);
+};
+var _elm_lang$html$Html_Attributes$keytype = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'keytype', value);
+};
+var _elm_lang$html$Html_Attributes$align = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'align', value);
+};
+var _elm_lang$html$Html_Attributes$cite = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'cite', value);
+};
+var _elm_lang$html$Html_Attributes$href = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'href', value);
+};
+var _elm_lang$html$Html_Attributes$target = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'target', value);
+};
+var _elm_lang$html$Html_Attributes$downloadAs = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'download', value);
+};
+var _elm_lang$html$Html_Attributes$hreflang = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'hreflang', value);
+};
+var _elm_lang$html$Html_Attributes$ping = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'ping', value);
+};
+var _elm_lang$html$Html_Attributes$start = function (n) {
+	return A2(
+		_elm_lang$html$Html_Attributes$stringProperty,
+		'start',
+		_elm_lang$core$Basics$toString(n));
+};
+var _elm_lang$html$Html_Attributes$headers = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'headers', value);
+};
+var _elm_lang$html$Html_Attributes$scope = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'scope', value);
+};
+var _elm_lang$html$Html_Attributes$boolProperty = F2(
+	function (name, bool) {
+		return A2(
+			_elm_lang$html$Html_Attributes$property,
+			name,
+			_elm_lang$core$Json_Encode$bool(bool));
+	});
+var _elm_lang$html$Html_Attributes$hidden = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'hidden', bool);
+};
+var _elm_lang$html$Html_Attributes$contenteditable = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'contentEditable', bool);
+};
+var _elm_lang$html$Html_Attributes$spellcheck = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'spellcheck', bool);
+};
+var _elm_lang$html$Html_Attributes$async = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'async', bool);
+};
+var _elm_lang$html$Html_Attributes$defer = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'defer', bool);
+};
+var _elm_lang$html$Html_Attributes$scoped = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'scoped', bool);
+};
+var _elm_lang$html$Html_Attributes$autoplay = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'autoplay', bool);
+};
+var _elm_lang$html$Html_Attributes$controls = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'controls', bool);
+};
+var _elm_lang$html$Html_Attributes$loop = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'loop', bool);
+};
+var _elm_lang$html$Html_Attributes$default = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'default', bool);
+};
+var _elm_lang$html$Html_Attributes$seamless = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'seamless', bool);
+};
+var _elm_lang$html$Html_Attributes$checked = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'checked', bool);
+};
+var _elm_lang$html$Html_Attributes$selected = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'selected', bool);
+};
+var _elm_lang$html$Html_Attributes$autofocus = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'autofocus', bool);
+};
+var _elm_lang$html$Html_Attributes$disabled = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'disabled', bool);
+};
+var _elm_lang$html$Html_Attributes$multiple = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'multiple', bool);
+};
+var _elm_lang$html$Html_Attributes$novalidate = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'noValidate', bool);
+};
+var _elm_lang$html$Html_Attributes$readonly = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'readOnly', bool);
+};
+var _elm_lang$html$Html_Attributes$required = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'required', bool);
+};
+var _elm_lang$html$Html_Attributes$ismap = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'isMap', value);
+};
+var _elm_lang$html$Html_Attributes$download = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'download', bool);
+};
+var _elm_lang$html$Html_Attributes$reversed = function (bool) {
+	return A2(_elm_lang$html$Html_Attributes$boolProperty, 'reversed', bool);
+};
+var _elm_lang$html$Html_Attributes$classList = function (list) {
+	return _elm_lang$html$Html_Attributes$class(
+		A2(
+			_elm_lang$core$String$join,
+			' ',
+			A2(
+				_elm_lang$core$List$map,
+				_elm_lang$core$Tuple$first,
+				A2(_elm_lang$core$List$filter, _elm_lang$core$Tuple$second, list))));
+};
+var _elm_lang$html$Html_Attributes$style = _elm_lang$virtual_dom$VirtualDom$style;
+
+var _elm_lang$html$Html_Events$keyCode = A2(_elm_lang$core$Json_Decode$field, 'keyCode', _elm_lang$core$Json_Decode$int);
+var _elm_lang$html$Html_Events$targetChecked = A2(
+	_elm_lang$core$Json_Decode$at,
+	{
+		ctor: '::',
+		_0: 'target',
+		_1: {
+			ctor: '::',
+			_0: 'checked',
+			_1: {ctor: '[]'}
+		}
+	},
+	_elm_lang$core$Json_Decode$bool);
+var _elm_lang$html$Html_Events$targetValue = A2(
+	_elm_lang$core$Json_Decode$at,
+	{
+		ctor: '::',
+		_0: 'target',
+		_1: {
+			ctor: '::',
+			_0: 'value',
+			_1: {ctor: '[]'}
+		}
+	},
+	_elm_lang$core$Json_Decode$string);
+var _elm_lang$html$Html_Events$defaultOptions = _elm_lang$virtual_dom$VirtualDom$defaultOptions;
+var _elm_lang$html$Html_Events$onWithOptions = _elm_lang$virtual_dom$VirtualDom$onWithOptions;
+var _elm_lang$html$Html_Events$on = _elm_lang$virtual_dom$VirtualDom$on;
+var _elm_lang$html$Html_Events$onFocus = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'focus',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onBlur = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'blur',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onSubmitOptions = _elm_lang$core$Native_Utils.update(
+	_elm_lang$html$Html_Events$defaultOptions,
+	{preventDefault: true});
+var _elm_lang$html$Html_Events$onSubmit = function (msg) {
+	return A3(
+		_elm_lang$html$Html_Events$onWithOptions,
+		'submit',
+		_elm_lang$html$Html_Events$onSubmitOptions,
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onCheck = function (tagger) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'change',
+		A2(_elm_lang$core$Json_Decode$map, tagger, _elm_lang$html$Html_Events$targetChecked));
+};
+var _elm_lang$html$Html_Events$onInput = function (tagger) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'input',
+		A2(_elm_lang$core$Json_Decode$map, tagger, _elm_lang$html$Html_Events$targetValue));
+};
+var _elm_lang$html$Html_Events$onMouseOut = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mouseout',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onMouseOver = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mouseover',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onMouseLeave = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mouseleave',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onMouseEnter = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mouseenter',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onMouseUp = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mouseup',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onMouseDown = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mousedown',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onDoubleClick = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'dblclick',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onClick = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'click',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$Options = F2(
+	function (a, b) {
+		return {stopPropagation: a, preventDefault: b};
+	});
+
 var _elm_lang$keyboard$Keyboard$onSelfMsg = F3(
 	function (router, _p0, state) {
 		var _p1 = _p0;
@@ -11728,38 +12193,64 @@ var _user$project$Main$background = A2(
 	},
 	{ctor: '[]'});
 var _user$project$Main$preloadAssets = function () {
-	var image = F2(
-		function (path, id) {
-			return A2(
-				_elm_lang$svg$Svg$image,
-				{
-					ctor: '::',
-					_0: _elm_lang$svg$Svg_Attributes$xlinkHref(path),
-					_1: {
-						ctor: '::',
-						_0: _elm_lang$svg$Svg_Attributes$id(id),
-						_1: {ctor: '[]'}
-					}
-				},
-				{ctor: '[]'});
-		});
-	return {
-		ctor: '::',
-		_0: A2(image, 'assets/island_01_01.png', 'island01'),
-		_1: {
+	var image = function (path) {
+		return A2(
+			_elm_lang$svg$Svg$image,
+			{
+				ctor: '::',
+				_0: _elm_lang$svg$Svg_Attributes$xlinkHref(path),
+				_1: {ctor: '[]'}
+			},
+			{ctor: '[]'});
+	};
+	return A2(
+		_elm_lang$svg$Svg$g,
+		{
 			ctor: '::',
-			_0: A2(image, 'assets/island_01_02.png', 'island02'),
+			_0: _elm_lang$svg$Svg_Attributes$visibility('hidden'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: image('assets/island_01_01.png'),
 			_1: {
 				ctor: '::',
-				_0: A2(image, 'assets/island_01_03.png', 'island03'),
+				_0: image('assets/island_01_02.png'),
 				_1: {
 					ctor: '::',
-					_0: A2(image, 'assets/island_01_02.png', 'island04'),
-					_1: {ctor: '[]'}
+					_0: image('assets/island_01_03.png'),
+					_1: {
+						ctor: '::',
+						_0: image('assets/island_01_02.png'),
+						_1: {
+							ctor: '::',
+							_0: image('assets/island_01_waterGradient.png'),
+							_1: {
+								ctor: '::',
+								_0: image('assets/writingInterface_noWater_Background.png'),
+								_1: {
+									ctor: '::',
+									_0: image('assets/writingInterface_water_01.png'),
+									_1: {
+										ctor: '::',
+										_0: image('assets/writingInterface_water_02.png'),
+										_1: {
+											ctor: '::',
+											_0: image('assets/writingInterface_water_03.png'),
+											_1: {
+												ctor: '::',
+												_0: image('assets/writingInterface_water_04.png'),
+												_1: {ctor: '[]'}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
 				}
 			}
-		}
-	};
+		});
 }();
 var _user$project$Main$dropFromTheFaceOfTheWorld = function (model) {
 	return _Fresheyeball$elm_return$Return$singleton(
@@ -11808,6 +12299,8 @@ var _user$project$Main$viewConfig = F2(
 				};
 			case 'OneIsland':
 				return {size: _user$project$Main$islandWorldSize, center: _p1._0.position};
+			case 'Writing':
+				return {size: _user$project$Main$islandWorldSize, center: _p1._0.island.position};
 			default:
 				return A2(_user$project$Animation$animate, _p1._0.viewConfig, now);
 		}
@@ -12098,6 +12591,9 @@ var _user$project$Main$serverMsgDecoder = A2(
 		}
 	},
 	A2(_elm_lang$core$Json_Decode$field, 'type', _elm_lang$core$Json_Decode$string));
+var _user$project$Main$Writing = function (a) {
+	return {ctor: 'Writing', _0: a};
+};
 var _user$project$Main$Transitioning = function (a) {
 	return {ctor: 'Transitioning', _0: a};
 };
@@ -12149,6 +12645,7 @@ var _user$project$Main$World = {ctor: 'World'};
 var _user$project$Main$ServerMsg = function (a) {
 	return {ctor: 'ServerMsg', _0: a};
 };
+var _user$project$Main$CleanUp = {ctor: 'CleanUp'};
 var _user$project$Main$SetTime = function (a) {
 	return {ctor: 'SetTime', _0: a};
 };
@@ -12168,26 +12665,44 @@ var _user$project$Main$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$batch(
 		{
 			ctor: '::',
-			_0: _elm_lang$animation_frame$AnimationFrame$diffs(_user$project$Main$Tick),
+			_0: function () {
+				var _p6 = model.focus;
+				if (_p6.ctor === 'Transitioning') {
+					return _elm_lang$animation_frame$AnimationFrame$diffs(_user$project$Main$Tick);
+				} else {
+					return A2(
+						_elm_lang$core$Time$every,
+						250 * _elm_lang$core$Time$millisecond,
+						_elm_lang$core$Basics$always(
+							_user$project$Main$Tick(250)));
+				}
+			}(),
 			_1: {
 				ctor: '::',
-				_0: _elm_lang$keyboard$Keyboard$presses(_user$project$Main$KeyPress),
+				_0: A2(
+					_elm_lang$core$Time$every,
+					10 * _elm_lang$core$Time$second,
+					_elm_lang$core$Basics$always(_user$project$Main$CleanUp)),
 				_1: {
 					ctor: '::',
-					_0: _elm_lang$mouse$Mouse$clicks(_user$project$Main$Click),
+					_0: _elm_lang$keyboard$Keyboard$presses(_user$project$Main$KeyPress),
 					_1: {
 						ctor: '::',
-						_0: _elm_lang$window$Window$resizes(_user$project$Main$Resize),
+						_0: _elm_lang$mouse$Mouse$clicks(_user$project$Main$Click),
 						_1: {
 							ctor: '::',
-							_0: A2(
-								_elm_lang$websocket$WebSocket$listen,
-								_user$project$Main$serverUrl,
-								function (_p6) {
-									return _user$project$Main$ServerMsg(
-										A2(_elm_lang$core$Json_Decode$decodeString, _user$project$Main$serverMsgDecoder, _p6));
-								}),
-							_1: {ctor: '[]'}
+							_0: _elm_lang$window$Window$resizes(_user$project$Main$Resize),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$websocket$WebSocket$listen,
+									_user$project$Main$serverUrl,
+									function (_p7) {
+										return _user$project$Main$ServerMsg(
+											A2(_elm_lang$core$Json_Decode$decodeString, _user$project$Main$serverMsgDecoder, _p7));
+									}),
+								_1: {ctor: '[]'}
+							}
 						}
 					}
 				}
@@ -12196,6 +12711,310 @@ var _user$project$Main$subscriptions = function (model) {
 };
 var _user$project$Main$CreatePost = function (a) {
 	return {ctor: 'CreatePost', _0: a};
+};
+var _user$project$Main$SendPost = {ctor: 'SendPost'};
+var _user$project$Main$UpdatePostMsg = function (a) {
+	return {ctor: 'UpdatePostMsg', _0: a};
+};
+var _user$project$Main$writingInterface = function (_p8) {
+	var _p9 = _p8;
+	var overlayAttributes = {
+		ctor: '::',
+		_0: _elm_lang$svg$Svg_Attributes$x('0'),
+		_1: {
+			ctor: '::',
+			_0: _elm_lang$svg$Svg_Attributes$y('0'),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$svg$Svg_Attributes$height('9'),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$svg$Svg_Attributes$width('16'),
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	};
+	var image = F2(
+		function (path, content) {
+			return A2(
+				_elm_lang$svg$Svg$image,
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					{
+						ctor: '::',
+						_0: _elm_lang$svg$Svg_Attributes$xlinkHref(path),
+						_1: {ctor: '[]'}
+					},
+					overlayAttributes),
+				content);
+		});
+	var waterAnimation = A2(
+		_elm_lang$svg$Svg$g,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				image,
+				'assets/writingInterface_water_01.png',
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$svg$Svg$animate,
+						{
+							ctor: '::',
+							_0: _elm_lang$svg$Svg_Attributes$attributeName('visibility'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$svg$Svg_Attributes$keyTimes('0;0.25'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$svg$Svg_Attributes$values('visible;hidden'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$svg$Svg_Attributes$calcMode('discrete'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$svg$Svg_Attributes$dur('1s'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$svg$Svg_Attributes$repeatCount('indefinite'),
+												_1: {ctor: '[]'}
+											}
+										}
+									}
+								}
+							}
+						},
+						{ctor: '[]'}),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					image,
+					'assets/writingInterface_water_02.png',
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$svg$Svg$animate,
+							{
+								ctor: '::',
+								_0: _elm_lang$svg$Svg_Attributes$attributeName('visibility'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$svg$Svg_Attributes$keyTimes('0;0.25;0.5'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$svg$Svg_Attributes$values('hidden;visible;hidden'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$svg$Svg_Attributes$calcMode('discrete'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$svg$Svg_Attributes$dur('1s'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$svg$Svg_Attributes$repeatCount('indefinite'),
+													_1: {ctor: '[]'}
+												}
+											}
+										}
+									}
+								}
+							},
+							{ctor: '[]'}),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						image,
+						'assets/writingInterface_water_03.png',
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$svg$Svg$animate,
+								{
+									ctor: '::',
+									_0: _elm_lang$svg$Svg_Attributes$attributeName('visibility'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$svg$Svg_Attributes$keyTimes('0;0.5;0.75'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$svg$Svg_Attributes$values('hidden;visible;hidden'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$svg$Svg_Attributes$calcMode('discrete'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$svg$Svg_Attributes$dur('1s'),
+													_1: {
+														ctor: '::',
+														_0: _elm_lang$svg$Svg_Attributes$repeatCount('indefinite'),
+														_1: {ctor: '[]'}
+													}
+												}
+											}
+										}
+									}
+								},
+								{ctor: '[]'}),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							image,
+							'assets/writingInterface_water_04.png',
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$svg$Svg$animate,
+									{
+										ctor: '::',
+										_0: _elm_lang$svg$Svg_Attributes$attributeName('visibility'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$svg$Svg_Attributes$keyTimes('0;0.75;1'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$svg$Svg_Attributes$values('hidden;visible;hidden'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$svg$Svg_Attributes$calcMode('discrete'),
+													_1: {
+														ctor: '::',
+														_0: _elm_lang$svg$Svg_Attributes$dur('1s'),
+														_1: {
+															ctor: '::',
+															_0: _elm_lang$svg$Svg_Attributes$repeatCount('indefinite'),
+															_1: {ctor: '[]'}
+														}
+													}
+												}
+											}
+										}
+									},
+									{ctor: '[]'}),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		});
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$svg$Svg$svg,
+				{
+					ctor: '::',
+					_0: _elm_lang$svg$Svg_Attributes$width('100%'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$svg$Svg_Attributes$height('100%'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$svg$Svg_Attributes$display('block'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$svg$Svg_Attributes$viewBox('0 0 16 9'),
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				},
+				{
+					ctor: '::',
+					_0: A2(
+						image,
+						'assets/writingInterface_noWater_Background.png',
+						{ctor: '[]'}),
+					_1: {
+						ctor: '::',
+						_0: waterAnimation,
+						_1: {ctor: '[]'}
+					}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$textarea,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$style(
+							{
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'position', _1: 'fixed'},
+								_1: {
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'top', _1: '35vh'},
+									_1: {
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'left', _1: '38vw'},
+										_1: {
+											ctor: '::',
+											_0: {ctor: '_Tuple2', _0: 'height', _1: '45vh'},
+											_1: {
+												ctor: '::',
+												_0: {ctor: '_Tuple2', _0: 'width', _1: '22vw'},
+												_1: {
+													ctor: '::',
+													_0: {ctor: '_Tuple2', _0: 'resize', _1: 'none'},
+													_1: {
+														ctor: '::',
+														_0: {ctor: '_Tuple2', _0: 'outline', _1: '0'},
+														_1: {
+															ctor: '::',
+															_0: {ctor: '_Tuple2', _0: 'border', _1: '0'},
+															_1: {
+																ctor: '::',
+																_0: {ctor: '_Tuple2', _0: 'font-size', _1: 'xx-large'},
+																_1: {ctor: '[]'}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$rows(5),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$cols(10),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$id('msgInput'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$autofocus(true),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$UpdatePostMsg),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Events$onBlur(_user$project$Main$SendPost),
+												_1: {ctor: '[]'}
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					{ctor: '[]'}),
+				_1: {ctor: '[]'}
+			}
+		});
 };
 var _user$project$Main$SelectIsland = function (a) {
 	return {ctor: 'SelectIsland', _0: a};
@@ -12406,8 +13225,8 @@ var _user$project$Main$drawIsland = F3(
 			{
 				ctor: '::',
 				_0: function () {
-					var _p7 = focus;
-					if (_p7.ctor === 'World') {
+					var _p10 = focus;
+					if (_p10.ctor === 'World') {
 						return _elm_lang$svg$Svg_Events$onClick(
 							_user$project$Main$SelectIsland(island));
 					} else {
@@ -12418,77 +13237,89 @@ var _user$project$Main$drawIsland = F3(
 			},
 			{
 				ctor: '::',
-				_0: islandAnimation,
+				_0: A2(
+					image,
+					'assets/island_01_waterGradient.png',
+					{ctor: '[]'}),
 				_1: {
 					ctor: '::',
-					_0: A2(
-						image,
-						'assets/character_01.png',
-						{ctor: '[]'}),
+					_0: islandAnimation,
 					_1: {
 						ctor: '::',
 						_0: A2(
 							image,
-							'assets/palmTree_01_01.png',
+							'assets/character_01.png',
 							{ctor: '[]'}),
-						_1: {ctor: '[]'}
+						_1: {
+							ctor: '::',
+							_0: A2(
+								image,
+								'assets/palmTree_01_01.png',
+								{ctor: '[]'}),
+							_1: {ctor: '[]'}
+						}
 					}
 				}
 			});
 	});
 var _user$project$Main$view = function (model) {
-	return A2(
-		_elm_lang$svg$Svg$svg,
-		{
-			ctor: '::',
-			_0: _elm_lang$svg$Svg_Attributes$width('100vw'),
-			_1: {
-				ctor: '::',
-				_0: _elm_lang$svg$Svg_Attributes$height('100vh'),
-				_1: {
-					ctor: '::',
-					_0: _elm_lang$svg$Svg_Attributes$display('block'),
-					_1: {
-						ctor: '::',
-						_0: _elm_lang$svg$Svg_Attributes$viewBox(
-							_user$project$Main$viewBoxHelper(
-								A2(_user$project$Main$viewConfig, model.time, model.focus))),
-						_1: {ctor: '[]'}
-					}
-				}
-			}
-		},
-		_elm_lang$core$List$concat(
+	var _p11 = model.focus;
+	if (_p11.ctor === 'Writing') {
+		return _user$project$Main$writingInterface(_p11._0);
+	} else {
+		return A2(
+			_elm_lang$svg$Svg$svg,
 			{
 				ctor: '::',
-				_0: _user$project$Main$preloadAssets,
+				_0: _elm_lang$svg$Svg_Attributes$width('100vw'),
 				_1: {
+					ctor: '::',
+					_0: _elm_lang$svg$Svg_Attributes$height('100vh'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$svg$Svg_Attributes$display('block'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$svg$Svg_Attributes$viewBox(
+								_user$project$Main$viewBoxHelper(
+									A2(_user$project$Main$viewConfig, model.time, model.focus))),
+							_1: {ctor: '[]'}
+						}
+					}
+				}
+			},
+			_elm_lang$core$List$concat(
+				{
 					ctor: '::',
 					_0: {
 						ctor: '::',
-						_0: _user$project$Main$background,
-						_1: {ctor: '[]'}
+						_0: _user$project$Main$preloadAssets,
+						_1: {
+							ctor: '::',
+							_0: _user$project$Main$background,
+							_1: {ctor: '[]'}
+						}
 					},
 					_1: {
 						ctor: '::',
 						_0: function () {
-							var _p8 = model.focus;
-							if (_p8.ctor === 'OneIsland') {
+							var _p12 = model.focus;
+							if (_p12.ctor === 'OneIsland') {
 								return A2(
 									_elm_lang$core$List$map,
 									A2(_user$project$Main$drawIsland, model.time, model.focus),
 									A2(
 										_elm_lang$core$List$filter,
-										function (_p9) {
+										function (_p13) {
 											return A2(
 												F2(
 													function (x, y) {
 														return _elm_lang$core$Native_Utils.eq(x, y);
 													}),
-												_p8._0.id,
+												_p12._0.id,
 												function (_) {
 													return _.id;
-												}(_p9));
+												}(_p13));
 										},
 										model.islands));
 							} else {
@@ -12507,8 +13338,8 @@ var _user$project$Main$view = function (model) {
 							_1: {ctor: '[]'}
 						}
 					}
-				}
-			}));
+				}));
+	}
 };
 var _user$project$Main$CreateIsland = function (a) {
 	return {ctor: 'CreateIsland', _0: a};
@@ -12536,24 +13367,24 @@ var _user$project$Main$init = A2(
 				}))));
 var _user$project$Main$update = F2(
 	function (msg, model) {
-		var _p10 = msg;
-		switch (_p10.ctor) {
+		var _p14 = msg;
+		switch (_p14.ctor) {
 			case 'CreateIsland':
-				var _p11 = _p10._0;
+				var _p15 = _p14._0;
 				return A2(
 					_Fresheyeball$elm_return$Return$command,
 					_user$project$Main$send(
-						_user$project$Main$NewIsland(_p11)),
+						_user$project$Main$NewIsland(_p15)),
 					_Fresheyeball$elm_return$Return$singleton(
 						_elm_lang$core$Native_Utils.update(
 							model,
 							{
-								islands: {ctor: '::', _0: _p11, _1: model.islands},
+								islands: {ctor: '::', _0: _p15, _1: model.islands},
 								focus: A3(
 									_user$project$Main$transitionFocus,
 									model,
 									model.focus,
-									_user$project$Main$OneIsland(_p11))
+									_user$project$Main$OneIsland(_p15))
 							})));
 			case 'SelectIsland':
 				return _Fresheyeball$elm_return$Return$singleton(
@@ -12564,28 +13395,30 @@ var _user$project$Main$update = F2(
 								_user$project$Main$transitionFocus,
 								model,
 								model.focus,
-								_user$project$Main$OneIsland(_p10._0))
+								_user$project$Main$OneIsland(_p14._0))
 						}));
 			case 'Tick':
 				return A2(
 					_Fresheyeball$elm_return$Return$andThen,
+					_user$project$Main$updateFocus,
+					_Fresheyeball$elm_return$Return$singleton(
+						_elm_lang$core$Native_Utils.update(
+							model,
+							{time: model.time + _p14._0})));
+			case 'CleanUp':
+				return A2(
+					_Fresheyeball$elm_return$Return$andThen,
 					_user$project$Main$dropFromTheFaceOfTheWorld,
-					A2(
-						_Fresheyeball$elm_return$Return$andThen,
-						_user$project$Main$updateFocus,
-						_Fresheyeball$elm_return$Return$singleton(
-							_elm_lang$core$Native_Utils.update(
-								model,
-								{time: model.time + _p10._0}))));
+					_Fresheyeball$elm_return$Return$singleton(model));
 			case 'SetTime':
 				return _Fresheyeball$elm_return$Return$singleton(
 					_elm_lang$core$Native_Utils.update(
 						model,
-						{time: _p10._0}));
+						{time: _p14._0}));
 			case 'KeyPress':
-				var _p12 = _p10._0;
+				var _p16 = _p14._0;
 				return _elm_lang$core$Native_Utils.eq(
-					_p12,
+					_p16,
 					_elm_lang$core$Char$toCode(
 						_elm_lang$core$Native_Utils.chr('w'))) ? _Fresheyeball$elm_return$Return$singleton(
 					_elm_lang$core$Native_Utils.update(
@@ -12593,7 +13426,7 @@ var _user$project$Main$update = F2(
 						{
 							focus: A3(_user$project$Main$transitionFocus, model, model.focus, _user$project$Main$World)
 						})) : (_elm_lang$core$Native_Utils.eq(
-					_p12,
+					_p16,
 					_elm_lang$core$Char$toCode(
 						_elm_lang$core$Native_Utils.chr('i'))) ? A2(
 					_Fresheyeball$elm_return$Return$command,
@@ -12602,126 +13435,138 @@ var _user$project$Main$update = F2(
 						_user$project$Main$CreateIsland,
 						_user$project$Main$islandGenerator(model.islands)),
 					_Fresheyeball$elm_return$Return$singleton(model)) : (_elm_lang$core$Native_Utils.eq(
-					_p12,
+					_p16,
 					_elm_lang$core$Char$toCode(
 						_elm_lang$core$Native_Utils.chr('c'))) ? A2(
 					_Fresheyeball$elm_return$Return$command,
 					_user$project$Main$send(_user$project$Main$Clear),
 					_user$project$Main$init) : _Fresheyeball$elm_return$Return$singleton(model)));
+			case 'UpdatePostMsg':
+				var _p17 = model.focus;
+				if (_p17.ctor === 'Writing') {
+					return _Fresheyeball$elm_return$Return$singleton(
+						_elm_lang$core$Native_Utils.update(
+							model,
+							{
+								focus: _user$project$Main$Writing(
+									_elm_lang$core$Native_Utils.update(
+										_p17._0,
+										{msg: _p14._0}))
+							}));
+				} else {
+					return _Fresheyeball$elm_return$Return$singleton(model);
+				}
+			case 'SendPost':
+				var _p18 = model.focus;
+				if (_p18.ctor === 'Writing') {
+					var _p19 = _p18._0.island;
+					return A2(
+						_Fresheyeball$elm_return$Return$command,
+						A2(
+							_mgold$elm_random_pcg$Random_Pcg$generate,
+							_user$project$Main$CreatePost,
+							A4(_user$project$Main$postGenerator, model.time, _p19.position, _p18._0.direction, _p18._0.msg)),
+						_Fresheyeball$elm_return$Return$singleton(
+							_elm_lang$core$Native_Utils.update(
+								model,
+								{
+									focus: _user$project$Main$OneIsland(_p19)
+								})));
+				} else {
+					return _Fresheyeball$elm_return$Return$singleton(model);
+				}
 			case 'CreatePost':
-				var _p13 = _p10._0;
+				var _p20 = _p14._0;
 				return A2(
 					_Fresheyeball$elm_return$Return$command,
 					_user$project$Main$send(
-						_user$project$Main$NewPost(_p13)),
+						_user$project$Main$NewPost(_p20)),
 					_Fresheyeball$elm_return$Return$singleton(
 						_elm_lang$core$Native_Utils.update(
 							model,
 							{
-								posts: {ctor: '::', _0: _p13, _1: model.posts}
+								posts: {ctor: '::', _0: _p20, _1: model.posts}
 							})));
 			case 'Click':
-				var _p18 = _p10._0;
-				var relative = {
-					x: _elm_lang$core$Basics$toFloat(_p18.x) / _elm_lang$core$Basics$toFloat(model.windowSize.width),
-					y: _elm_lang$core$Basics$toFloat(_p18.y) / _elm_lang$core$Basics$toFloat(model.windowSize.height)
-				};
-				var worldPosition = A2(
-					_elm_community$linear_algebra$Math_Vector2$add,
-					_user$project$Main$topLeft(
-						A2(_user$project$Main$viewConfig, model.time, model.focus)),
-					A2(
-						_elm_community$linear_algebra$Math_Vector2$vec2,
+				var _p23 = _p14._0;
+				var _p21 = model.focus;
+				if (_p21.ctor === 'OneIsland') {
+					var _p22 = _p21._0;
+					var relative = {
+						x: _elm_lang$core$Basics$toFloat(_p23.x) / _elm_lang$core$Basics$toFloat(model.windowSize.width),
+						y: _elm_lang$core$Basics$toFloat(_p23.y) / _elm_lang$core$Basics$toFloat(model.windowSize.height)
+					};
+					var worldPosition = A2(
+						_elm_community$linear_algebra$Math_Vector2$add,
+						_user$project$Main$topLeft(
+							A2(_user$project$Main$viewConfig, model.time, model.focus)),
 						A2(
-							F2(
-								function (x, y) {
-									return x * y;
-								}),
-							relative.x,
-							_elm_community$linear_algebra$Math_Vector2$getX(
-								function (_) {
-									return _.size;
-								}(
-									A2(_user$project$Main$viewConfig, model.time, model.focus)))),
-						A2(
-							F2(
-								function (x, y) {
-									return x * y;
-								}),
-							relative.y,
-							_elm_community$linear_algebra$Math_Vector2$getY(
-								function (_) {
-									return _.size;
-								}(
-									A2(_user$project$Main$viewConfig, model.time, model.focus))))));
-				var newPost = function () {
-					var _p14 = model.focus;
-					if (_p14.ctor === 'OneIsland') {
-						var _p15 = _p14._0;
-						return _elm_lang$core$Maybe$Just(
+							_elm_community$linear_algebra$Math_Vector2$vec2,
+							A2(
+								F2(
+									function (x, y) {
+										return x * y;
+									}),
+								relative.x,
+								_elm_community$linear_algebra$Math_Vector2$getX(
+									function (_) {
+										return _.size;
+									}(
+										A2(_user$project$Main$viewConfig, model.time, model.focus)))),
+							A2(
+								F2(
+									function (x, y) {
+										return x * y;
+									}),
+								relative.y,
+								_elm_community$linear_algebra$Math_Vector2$getY(
+									function (_) {
+										return _.size;
+									}(
+										A2(_user$project$Main$viewConfig, model.time, model.focus))))));
+					var direction = A2(_elm_community$linear_algebra$Math_Vector2$direction, worldPosition, _p22.position);
+					return _Fresheyeball$elm_return$Return$singleton(
+						_elm_lang$core$Native_Utils.update(
+							model,
 							{
-								createdAt: model.time,
-								origin: _p15.position,
-								direction: A2(_elm_community$linear_algebra$Math_Vector2$direction, worldPosition, _p15.position),
-								msg: 'Hello!'
-							});
-					} else {
-						return _elm_lang$core$Maybe$Nothing;
-					}
-				}();
-				return A2(
-					_Fresheyeball$elm_return$Return$command,
-					function () {
-						var _p16 = model.focus;
-						if (_p16.ctor === 'OneIsland') {
-							var _p17 = _p16._0;
-							return A2(
-								_mgold$elm_random_pcg$Random_Pcg$generate,
-								_user$project$Main$CreatePost,
-								A4(
-									_user$project$Main$postGenerator,
-									model.time,
-									_p17.position,
-									A2(_elm_community$linear_algebra$Math_Vector2$direction, worldPosition, _p17.position),
-									'Hello!'));
-						} else {
-							return _elm_lang$core$Platform_Cmd$none;
-						}
-					}(),
-					_Fresheyeball$elm_return$Return$singleton(model));
+								focus: A2(
+									_elm_lang$core$Debug$log,
+									'Writing',
+									_user$project$Main$Writing(
+										{island: _p22, direction: direction, msg: ''}))
+							}));
+				} else {
+					return _Fresheyeball$elm_return$Return$singleton(model);
+				}
 			case 'Resize':
 				return _Fresheyeball$elm_return$Return$singleton(
 					_elm_lang$core$Native_Utils.update(
 						model,
-						{windowSize: _p10._0}));
+						{windowSize: _p14._0}));
 			default:
-				if (_p10._0.ctor === 'Ok') {
-					switch (_p10._0._0.ctor) {
+				if (_p14._0.ctor === 'Ok') {
+					switch (_p14._0._0.ctor) {
 						case 'NewPost':
-							var _p19 = _p10._0._0._0;
+							var _p24 = _p14._0._0._0;
 							return _Fresheyeball$elm_return$Return$singleton(
 								_elm_lang$core$Native_Utils.update(
 									model,
 									{
-										posts: A2(_elm_lang$core$List$member, _p19, model.posts) ? model.posts : {
-											ctor: '::',
-											_0: A2(_elm_lang$core$Debug$log, 'remote post!', _p19),
-											_1: model.posts
-										}
+										posts: A2(_elm_lang$core$List$member, _p24, model.posts) ? model.posts : {ctor: '::', _0: _p24, _1: model.posts}
 									}));
 						case 'NewIsland':
-							var _p20 = _p10._0._0._0;
+							var _p25 = _p14._0._0._0;
 							return _Fresheyeball$elm_return$Return$singleton(
 								_elm_lang$core$Native_Utils.update(
 									model,
 									{
-										islands: A2(_elm_lang$core$List$member, _p20, model.islands) ? model.islands : {ctor: '::', _0: _p20, _1: model.islands}
+										islands: A2(_elm_lang$core$List$member, _p25, model.islands) ? model.islands : {ctor: '::', _0: _p25, _1: model.islands}
 									}));
 						default:
 							return _user$project$Main$init;
 					}
 				} else {
-					var msg_ = A2(_elm_lang$core$Debug$log, 'ServerMsg decoding failed', _p10._0._0);
+					var msg_ = A2(_elm_lang$core$Debug$log, 'ServerMsg decoding failed', _p14._0._0);
 					return _Fresheyeball$elm_return$Return$singleton(model);
 				}
 		}

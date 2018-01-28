@@ -18,6 +18,8 @@ import Math.Vector2 as Vector2 exposing (Vec2, vec2, getX, getY)
 --
 
 import Html as H
+import Html.Attributes as HA
+import Html.Events as HE
 import Svg as S
 import Svg.Attributes as SA
 import Svg.Events as SE
@@ -169,8 +171,11 @@ type ServerMsg
 
 serverUrl : String
 serverUrl =
-    --"ws://localhost:9998"
-    "ws://192.168.43.251:9998"
+    "ws://localhost:9998"
+
+
+
+--"ws://192.168.43.251:9998"
 
 
 encodeServerMsg : ServerMsg -> JE.Value
@@ -234,6 +239,11 @@ type Focus
         { to : Focus
         , viewConfig : Animation ViewConfig
         }
+    | Writing
+        { island : Island
+        , direction : Vec2
+        , msg : String
+        }
 
 
 type alias ViewConfig =
@@ -267,6 +277,11 @@ viewConfig now focus =
             }
 
         OneIsland island ->
+            { size = islandWorldSize
+            , center = island.position
+            }
+
+        Writing { island } ->
             { size = islandWorldSize
             , center = island.position
             }
@@ -349,6 +364,8 @@ type Msg
     = CreateIsland Island
     | SelectIsland Island
       --
+    | UpdatePostMsg String
+    | SendPost
     | CreatePost Post
       --
     | KeyPress Keyboard.KeyCode
@@ -407,50 +424,61 @@ update msg model =
                 model
                     |> Return.singleton
 
+        UpdatePostMsg msg ->
+            case model.focus of
+                Writing state ->
+                    { model | focus = Writing { state | msg = msg } }
+                        |> Return.singleton
+
+                _ ->
+                    model
+                        |> Return.singleton
+
+        SendPost ->
+            case model.focus of
+                Writing { island, direction, msg } ->
+                    { model | focus = OneIsland island }
+                        |> Return.singleton
+                        |> Return.command
+                            (postGenerator model.time island.position direction msg
+                                |> Random.generate CreatePost
+                            )
+
+                _ ->
+                    model
+                        |> Return.singleton
+
         CreatePost post ->
             { model | posts = post :: model.posts }
                 |> Return.singleton
                 |> Return.command (post |> NewPost |> send)
 
         Click position ->
-            let
-                relative =
-                    { x = (toFloat position.x / toFloat model.windowSize.width)
-                    , y = (toFloat position.y / toFloat model.windowSize.height)
-                    }
-
-                worldPosition =
-                    Vector2.add
-                        (viewConfig model.time model.focus |> topLeft)
-                        (vec2
-                            (viewConfig model.time model.focus |> .size |> getX |> (*) relative.x)
-                            (viewConfig model.time model.focus |> .size |> getY |> (*) relative.y)
-                        )
-
-                newPost =
-                    case model.focus of
-                        OneIsland island ->
-                            { createdAt = model.time
-                            , origin = island.position
-                            , direction = Vector2.direction worldPosition island.position
-                            , msg = "Hello!"
+            case model.focus of
+                OneIsland island ->
+                    let
+                        relative =
+                            { x = (toFloat position.x / toFloat model.windowSize.width)
+                            , y = (toFloat position.y / toFloat model.windowSize.height)
                             }
-                                |> Just
 
-                        _ ->
-                            Nothing
-            in
-                model
-                    |> Return.singleton
-                    |> Return.command
-                        (case model.focus of
-                            OneIsland island ->
-                                postGenerator model.time island.position (Vector2.direction worldPosition island.position) "Hello!"
-                                    |> Random.generate CreatePost
+                        worldPosition =
+                            Vector2.add
+                                (viewConfig model.time model.focus |> topLeft)
+                                (vec2
+                                    (viewConfig model.time model.focus |> .size |> getX |> (*) relative.x)
+                                    (viewConfig model.time model.focus |> .size |> getY |> (*) relative.y)
+                                )
 
-                            _ ->
-                                Cmd.none
-                        )
+                        direction =
+                            Vector2.direction worldPosition island.position
+                    in
+                        { model | focus = Writing { island = island, direction = direction, msg = "" } |> Debug.log "Writing" }
+                            |> Return.singleton
+
+                _ ->
+                    model
+                        |> Return.singleton
 
         Resize size ->
             { model | windowSize = size }
@@ -520,7 +548,12 @@ dropFromTheFaceOfTheWorld model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    [ AnimationFrame.diffs Tick
+    [ case model.focus of
+        Transitioning _ ->
+            AnimationFrame.diffs Tick
+
+        _ ->
+            Time.every (250 * Time.millisecond) (always <| Tick 250)
     , Time.every (10 * Time.second) (always CleanUp)
     , Keyboard.presses KeyPress
     , Mouse.clicks Click
@@ -549,46 +582,152 @@ viewBoxHelper viewConfig =
 
 view : Model -> H.Html Msg
 view model =
-    S.svg
-        [ SA.width "100vw"
-        , SA.height "100vh"
-        , SA.display "block"
-        , model.focus
-            |> viewConfig model.time
-            |> viewBoxHelper
-            |> SA.viewBox
-        ]
-        ([ preloadAssets
-         , [ background ]
-         , case model.focus of
-            OneIsland island ->
-                model.islands
-                    |> List.filter (.id >> (==) island.id)
-                    |> List.map (drawIsland model.time model.focus)
+    case model.focus of
+        Writing writingState ->
+            writingInterface writingState
 
-            _ ->
-                model.islands
-                    |> List.map (drawIsland model.time model.focus)
-         , model.posts
-            |> List.map (drawPost model.time)
-         ]
-            |> List.concat
-        )
+        _ ->
+            S.svg
+                [ SA.width "100vw"
+                , SA.height "100vh"
+                , SA.display "block"
+                , model.focus
+                    |> viewConfig model.time
+                    |> viewBoxHelper
+                    |> SA.viewBox
+                ]
+                ([ [ preloadAssets, background ]
+                 , case model.focus of
+                    OneIsland island ->
+                        model.islands
+                            |> List.filter (.id >> (==) island.id)
+                            |> List.map (drawIsland model.time model.focus)
+
+                    _ ->
+                        model.islands
+                            |> List.map (drawIsland model.time model.focus)
+                 , model.posts
+                    |> List.map (drawPost model.time)
+                 ]
+                    |> List.concat
+                )
 
 
-preloadAssets : List (S.Svg Msg)
+writingInterface : { island : Island, direction : Vec2, msg : String } -> S.Svg Msg
+writingInterface { island, direction, msg } =
+    let
+        overlayAttributes =
+            [ SA.x "0"
+            , SA.y "0"
+            , SA.height "9"
+            , SA.width "16"
+            ]
+
+        image path content =
+            S.image
+                ([ SA.xlinkHref path ] ++ overlayAttributes)
+                content
+
+        waterAnimation =
+            S.g []
+                [ image "assets/writingInterface_water_01.png"
+                    [ S.animate
+                        [ SA.attributeName "visibility"
+                        , SA.keyTimes "0;0.25"
+                        , SA.values "visible;hidden"
+                        , SA.calcMode "discrete"
+                        , SA.dur "1s"
+                        , SA.repeatCount "indefinite"
+                        ]
+                        []
+                    ]
+                , image "assets/writingInterface_water_02.png"
+                    [ S.animate
+                        [ SA.attributeName "visibility"
+                        , SA.keyTimes "0;0.25;0.5"
+                        , SA.values "hidden;visible;hidden"
+                        , SA.calcMode "discrete"
+                        , SA.dur "1s"
+                        , SA.repeatCount "indefinite"
+                        ]
+                        []
+                    ]
+                , image "assets/writingInterface_water_03.png"
+                    [ S.animate
+                        [ SA.attributeName "visibility"
+                        , SA.keyTimes "0;0.5;0.75"
+                        , SA.values "hidden;visible;hidden"
+                        , SA.calcMode "discrete"
+                        , SA.dur "1s"
+                        , SA.repeatCount "indefinite"
+                        ]
+                        []
+                    ]
+                , image "assets/writingInterface_water_04.png"
+                    [ S.animate
+                        [ SA.attributeName "visibility"
+                        , SA.keyTimes "0;0.75;1"
+                        , SA.values "hidden;visible;hidden"
+                        , SA.calcMode "discrete"
+                        , SA.dur "1s"
+                        , SA.repeatCount "indefinite"
+                        ]
+                        []
+                    ]
+                ]
+    in
+        H.div []
+            [ S.svg
+                [ SA.width "100%"
+                , SA.height "100%"
+                , SA.display "block"
+                , SA.viewBox "0 0 16 9"
+                ]
+                [ image "assets/writingInterface_noWater_Background.png" []
+                , waterAnimation
+                ]
+            , H.textarea
+                [ HA.style
+                    [ ( "position", "fixed" )
+                    , ( "top", "35vh" )
+                    , ( "left", "38vw" )
+                    , ( "height", "45vh" )
+                    , ( "width", "22vw" )
+                    , ( "resize", "none" )
+                    , ( "outline", "0" )
+                    , ( "border", "0" )
+                    , ( "font-size", "xx-large" )
+                    ]
+                , HA.rows 5
+                , HA.cols 10
+                , HA.id "msgInput"
+                , HA.autofocus True
+                , HE.onInput UpdatePostMsg
+                , HE.onBlur SendPost
+                ]
+                []
+            ]
+
+
+preloadAssets : S.Svg Msg
 preloadAssets =
     let
-        image path id =
-            S.image [ SA.xlinkHref path, SA.id id ]
+        image path =
+            S.image [ SA.xlinkHref path ]
                 []
     in
-        [ image "assets/island_01_01.png" "island01"
-        , image "assets/island_01_02.png" "island02"
-        , image "assets/island_01_03.png" "island03"
-        , image "assets/island_01_02.png" "island04"
-        , image "assets/island_01_waterGradient.png" "waterGradient"
-        ]
+        S.g [ SA.visibility "hidden" ]
+            [ image "assets/island_01_01.png"
+            , image "assets/island_01_02.png"
+            , image "assets/island_01_03.png"
+            , image "assets/island_01_02.png"
+            , image "assets/island_01_waterGradient.png"
+            , image "assets/writingInterface_noWater_Background.png"
+            , image "assets/writingInterface_water_01.png"
+            , image "assets/writingInterface_water_02.png"
+            , image "assets/writingInterface_water_03.png"
+            , image "assets/writingInterface_water_04.png"
+            ]
 
 
 background : S.Svg Msg
