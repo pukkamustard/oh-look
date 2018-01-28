@@ -12134,16 +12134,16 @@ var _user$project$Main$background = A2(
 		_0: _elm_lang$svg$Svg_Attributes$xlinkHref('assets/BackGroundBlue.png'),
 		_1: {
 			ctor: '::',
-			_0: _elm_lang$svg$Svg_Attributes$x('-1000'),
+			_0: _elm_lang$svg$Svg_Attributes$x('-100'),
 			_1: {
 				ctor: '::',
-				_0: _elm_lang$svg$Svg_Attributes$y('-1000'),
+				_0: _elm_lang$svg$Svg_Attributes$y('-100'),
 				_1: {
 					ctor: '::',
-					_0: _elm_lang$svg$Svg_Attributes$height('2000'),
+					_0: _elm_lang$svg$Svg_Attributes$height('200'),
 					_1: {
 						ctor: '::',
-						_0: _elm_lang$svg$Svg_Attributes$width('2000'),
+						_0: _elm_lang$svg$Svg_Attributes$width('200'),
 						_1: {ctor: '[]'}
 					}
 				}

@@ -5,11 +5,54 @@
         <title>The Island</title>
         <style>
         body { margin: 0px; padding: 0px }
+
+        #pre-page {
+          position: fixed;
+          height: 100%;
+          width: 100%;
+          top: 0;
+          left: 0;
+          background-image: url("assets/BackGroundBlue.png");
+          background-size: cover;
+        }
+
+        .outer-div
+        {
+             padding-top: 3vh;
+        }
+
+        .inner-div
+        {
+             margin: 0 auto;
+             width: 100px; 
+        }
+
+        img { 
+          display: block; 
+          margin: 0 auto;
+        }
+
+        #start-button {
+          padding: 5vh 0 5vh 0;
+          order: 5;
+        }
+
+        #start-island {
+          position: fixed;
+          bottom: 0;
+          margin: 0 auto;
+          left: 25vw;
+          width: 50vw;
+        }
+
         </style>
     </head>
     <body>
-      <div id="pre-page">
-      <button id="start-button">Start</button>
+      <div id="pre-page" class="outer-div">
+        <img class="inner" style="width: 30vw;" src="assets/startScreenTitle.gif">
+        <img class="inner" id="start-button" style="width: 15vw;" src="assets/startButton.gif">
+        <img class="inner" id="start-island" src="assets/startScreen_waterAndIslandAnimation.gif">
+
       </div>
     <script type="text/javascript" src="island.js"></script></body>
 </html>
