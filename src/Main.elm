@@ -900,7 +900,7 @@ preloadAssets =
             , image "assets/island_01_02.png"
             , image "assets/island_01_03.png"
             , image "assets/island_01_02.png"
-            , image "assets/island_01_waterGradient.png"
+            , image "assets/island_01_underwaterGradient.svg"
             , image "assets/writingInterface_noWater_Background.png"
             , image "assets/writingInterface_water_01.png"
             , image "assets/writingInterface_water_02.png"
@@ -1029,7 +1029,7 @@ drawIsland now focus island =
                 _ ->
                     SA.visibility "true"
             ]
-            [ image "assets/island_01_waterGradient.png" []
+            [ image "assets/island_01_underwaterGradient.svg" []
             , islandAnimation
             , image "assets/character_01.png" []
             , image "assets/palmTree_01_01.png" []

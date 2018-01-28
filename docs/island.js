@@ -12186,7 +12186,7 @@ var _user$project$Main$preloadAssets = function () {
 							_0: image('assets/island_01_02.png'),
 							_1: {
 								ctor: '::',
-								_0: image('assets/island_01_waterGradient.png'),
+								_0: image('assets/island_01_underwaterGradient.svg'),
 								_1: {
 									ctor: '::',
 									_0: image('assets/writingInterface_noWater_Background.png'),
@@ -13652,7 +13652,7 @@ var _user$project$Main$drawIsland = F3(
 				ctor: '::',
 				_0: A2(
 					image,
-					'assets/island_01_waterGradient.png',
+					'assets/island_01_underwaterGradient.svg',
 					{ctor: '[]'}),
 				_1: {
 					ctor: '::',
