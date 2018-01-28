@@ -12731,7 +12731,7 @@ var _user$project$Main$readingInterface = function (_p9) {
 			ctor: '::',
 			_0: A2(
 				image,
-				'assets/writingInterface_water_01.png',
+				'assets/readingInterface_water_01.png',
 				{
 					ctor: '::',
 					_0: A2(
@@ -12756,7 +12756,7 @@ var _user$project$Main$readingInterface = function (_p9) {
 												_0: _elm_lang$svg$Svg_Attributes$repeatCount('indefinite'),
 												_1: {
 													ctor: '::',
-													_0: _elm_lang$svg$Svg_Attributes$id('water01'),
+													_0: _elm_lang$svg$Svg_Attributes$id('reading-water-anim'),
 													_1: {ctor: '[]'}
 												}
 											}
@@ -12772,7 +12772,7 @@ var _user$project$Main$readingInterface = function (_p9) {
 				ctor: '::',
 				_0: A2(
 					image,
-					'assets/writingInterface_water_02.png',
+					'assets/readingInterface_water_02.png',
 					{
 						ctor: '::',
 						_0: A2(
@@ -12797,7 +12797,7 @@ var _user$project$Main$readingInterface = function (_p9) {
 													_0: _elm_lang$svg$Svg_Attributes$repeatCount('indefinite'),
 													_1: {
 														ctor: '::',
-														_0: _elm_lang$svg$Svg_Attributes$begin('water01.begin'),
+														_0: _elm_lang$svg$Svg_Attributes$begin('reading-water-anim.begin'),
 														_1: {ctor: '[]'}
 													}
 												}
@@ -12813,7 +12813,7 @@ var _user$project$Main$readingInterface = function (_p9) {
 					ctor: '::',
 					_0: A2(
 						image,
-						'assets/writingInterface_water_03.png',
+						'assets/readingInterface_water_03.png',
 						{
 							ctor: '::',
 							_0: A2(
@@ -12838,7 +12838,7 @@ var _user$project$Main$readingInterface = function (_p9) {
 														_0: _elm_lang$svg$Svg_Attributes$repeatCount('indefinite'),
 														_1: {
 															ctor: '::',
-															_0: _elm_lang$svg$Svg_Attributes$begin('water01.begin'),
+															_0: _elm_lang$svg$Svg_Attributes$begin('reading-water-anim.begin'),
 															_1: {ctor: '[]'}
 														}
 													}
@@ -12854,7 +12854,7 @@ var _user$project$Main$readingInterface = function (_p9) {
 						ctor: '::',
 						_0: A2(
 							image,
-							'assets/writingInterface_water_04.png',
+							'assets/readingInterface_water_04.png',
 							{
 								ctor: '::',
 								_0: A2(
@@ -12879,7 +12879,7 @@ var _user$project$Main$readingInterface = function (_p9) {
 															_0: _elm_lang$svg$Svg_Attributes$repeatCount('indefinite'),
 															_1: {
 																ctor: '::',
-																_0: _elm_lang$svg$Svg_Attributes$begin('water01.begin'),
+																_0: _elm_lang$svg$Svg_Attributes$begin('reading-water-anim.begin'),
 																_1: {ctor: '[]'}
 															}
 														}
@@ -12898,7 +12898,11 @@ var _user$project$Main$readingInterface = function (_p9) {
 		});
 	return A2(
 		_elm_lang$html$Html$div,
-		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$GoBackToIsland),
+			_1: {ctor: '[]'}
+		},
 		{
 			ctor: '::',
 			_0: A2(
@@ -12924,12 +12928,19 @@ var _user$project$Main$readingInterface = function (_p9) {
 					ctor: '::',
 					_0: A2(
 						image,
-						'assets/writingInterface_noWater_Background.png',
+						'assets/readingInterface_background.png',
 						{ctor: '[]'}),
 					_1: {
 						ctor: '::',
 						_0: waterAnimation,
-						_1: {ctor: '[]'}
+						_1: {
+							ctor: '::',
+							_0: A2(
+								image,
+								'assets/readingInterface_bottle.png',
+								{ctor: '[]'}),
+							_1: {ctor: '[]'}
+						}
 					}
 				}),
 			_1: {
@@ -12944,10 +12955,10 @@ var _user$project$Main$readingInterface = function (_p9) {
 								_0: {ctor: '_Tuple2', _0: 'position', _1: 'fixed'},
 								_1: {
 									ctor: '::',
-									_0: {ctor: '_Tuple2', _0: 'top', _1: '35vh'},
+									_0: {ctor: '_Tuple2', _0: 'top', _1: '45vh'},
 									_1: {
 										ctor: '::',
-										_0: {ctor: '_Tuple2', _0: 'left', _1: '38vw'},
+										_0: {ctor: '_Tuple2', _0: 'left', _1: '39vw'},
 										_1: {
 											ctor: '::',
 											_0: {ctor: '_Tuple2', _0: 'height', _1: '45vh'},
@@ -12991,11 +13002,7 @@ var _user$project$Main$readingInterface = function (_p9) {
 										_1: {
 											ctor: '::',
 											_0: _elm_lang$html$Html_Attributes$readonly(true),
-											_1: {
-												ctor: '::',
-												_0: _elm_lang$html$Html_Events$onBlur(_user$project$Main$GoBackToIsland),
-												_1: {ctor: '[]'}
-											}
+											_1: {ctor: '[]'}
 										}
 									}
 								}

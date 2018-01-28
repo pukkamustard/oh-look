@@ -696,7 +696,7 @@ readingInterface { island, post } =
 
         waterAnimation =
             S.g []
-                [ image "assets/writingInterface_water_01.png"
+                [ image "assets/readingInterface_water_01.png"
                     [ S.animate
                         [ SA.attributeName "visibility"
                         , SA.keyTimes "0;0.25"
@@ -704,11 +704,11 @@ readingInterface { island, post } =
                         , SA.calcMode "discrete"
                         , SA.dur "1s"
                         , SA.repeatCount "indefinite"
-                        , SA.id "water01"
+                        , SA.id "reading-water-anim"
                         ]
                         []
                     ]
-                , image "assets/writingInterface_water_02.png"
+                , image "assets/readingInterface_water_02.png"
                     [ S.animate
                         [ SA.attributeName "visibility"
                         , SA.keyTimes "0;0.25;0.5"
@@ -716,11 +716,11 @@ readingInterface { island, post } =
                         , SA.calcMode "discrete"
                         , SA.dur "1s"
                         , SA.repeatCount "indefinite"
-                        , SA.begin "water01.begin"
+                        , SA.begin "reading-water-anim.begin"
                         ]
                         []
                     ]
-                , image "assets/writingInterface_water_03.png"
+                , image "assets/readingInterface_water_03.png"
                     [ S.animate
                         [ SA.attributeName "visibility"
                         , SA.keyTimes "0;0.5;0.75"
@@ -728,11 +728,11 @@ readingInterface { island, post } =
                         , SA.calcMode "discrete"
                         , SA.dur "1s"
                         , SA.repeatCount "indefinite"
-                        , SA.begin "water01.begin"
+                        , SA.begin "reading-water-anim.begin"
                         ]
                         []
                     ]
-                , image "assets/writingInterface_water_04.png"
+                , image "assets/readingInterface_water_04.png"
                     [ S.animate
                         [ SA.attributeName "visibility"
                         , SA.keyTimes "0;0.75"
@@ -740,27 +740,30 @@ readingInterface { island, post } =
                         , SA.calcMode "discrete"
                         , SA.dur "1s"
                         , SA.repeatCount "indefinite"
-                        , SA.begin "water01.begin"
+                        , SA.begin "reading-water-anim.begin"
                         ]
                         []
                     ]
                 ]
     in
-        H.div []
+        H.div
+            [ HE.onClick GoBackToIsland
+            ]
             [ S.svg
                 [ SA.width "100%"
                 , SA.height "100%"
                 , SA.display "block"
                 , SA.viewBox "0 0 16 9"
                 ]
-                [ image "assets/writingInterface_noWater_Background.png" []
+                [ image "assets/readingInterface_background.png" []
                 , waterAnimation
+                , image "assets/readingInterface_bottle.png" []
                 ]
             , H.textarea
                 [ HA.style
                     [ ( "position", "fixed" )
-                    , ( "top", "35vh" )
-                    , ( "left", "38vw" )
+                    , ( "top", "45vh" )
+                    , ( "left", "39vw" )
                     , ( "height", "45vh" )
                     , ( "width", "22vw" )
                     , ( "resize", "none" )
@@ -773,7 +776,6 @@ readingInterface { island, post } =
                 , HA.id "msgInput"
                 , HA.value post.msg
                 , HA.readonly True
-                , HE.onBlur GoBackToIsland
                 ]
                 []
             ]
