@@ -13748,37 +13748,26 @@ var _user$project$Main$update = F2(
 				var _p18 = _p16._0;
 				return A2(
 					_Fresheyeball$elm_return$Return$command,
-					A2(
-						_mgold$elm_random_pcg$Random_Pcg$generate,
-						_user$project$Main$CreatePost,
-						A4(
-							_user$project$Main$postGenerator,
-							model.time,
-							_p18.position,
-							A2(_elm_community$linear_algebra$Math_Vector2$vec2, 1, 0),
-							'Hello!')),
-					A2(
-						_Fresheyeball$elm_return$Return$command,
-						_user$project$Main$send(
-							_user$project$Main$NewIsland(_p18)),
-						_Fresheyeball$elm_return$Return$singleton(
-							_elm_lang$core$Native_Utils.update(
-								model,
-								{
-									islands: {ctor: '::', _0: _p18, _1: model.islands},
-									focus: function () {
-										var _p17 = model.focus;
-										if (_p17.ctor === 'World') {
-											return A3(
-												_user$project$Main$transitionFocus,
-												model,
-												model.focus,
-												_user$project$Main$OneIsland(_p18));
-										} else {
-											return _user$project$Main$OneIsland(_p18);
-										}
-									}()
-								}))));
+					_user$project$Main$send(
+						_user$project$Main$NewIsland(_p18)),
+					_Fresheyeball$elm_return$Return$singleton(
+						_elm_lang$core$Native_Utils.update(
+							model,
+							{
+								islands: {ctor: '::', _0: _p18, _1: model.islands},
+								focus: function () {
+									var _p17 = model.focus;
+									if (_p17.ctor === 'World') {
+										return A3(
+											_user$project$Main$transitionFocus,
+											model,
+											model.focus,
+											_user$project$Main$OneIsland(_p18));
+									} else {
+										return _user$project$Main$OneIsland(_p18);
+									}
+								}()
+							})));
 			case 'SelectIsland':
 				return _Fresheyeball$elm_return$Return$singleton(
 					_elm_lang$core$Native_Utils.update(

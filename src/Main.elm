@@ -412,11 +412,11 @@ update msg model =
             }
                 |> Return.singleton
                 |> Return.command (island |> NewIsland |> send)
-                |> Return.command
-                    (postGenerator model.time island.position (vec2 1 0) "Hello!"
-                        |> Random.generate CreatePost
-                    )
 
+        --|> Return.command
+        --(postGenerator model.time island.position (vec2 1 0) "Hello!"
+        --|> Random.generate CreatePost
+        --)
         SelectIsland island ->
             { model
                 | focus = transitionFocus model model.focus (OneIsland island)
