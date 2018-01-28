@@ -171,7 +171,7 @@ type ServerMsg
 
 serverUrl : String
 serverUrl =
-    "ws://the-island.smplfy.ch/server"
+    "ws://oh-look.smplfy.ch/server"
 
 
 

@@ -12335,7 +12335,7 @@ var _user$project$Main$viewBoxHelper = function (viewConfig) {
 							_elm_lang$core$Basics$toString(
 								_elm_community$linear_algebra$Math_Vector2$getY(viewConfig.size))))))));
 };
-var _user$project$Main$serverUrl = 'ws://the-island.smplfy.ch/server';
+var _user$project$Main$serverUrl = 'ws://oh-look.smplfy.ch/server';
 var _user$project$Main$encodeVec2 = function (vec) {
 	return _elm_lang$core$Json_Encode$object(
 		{

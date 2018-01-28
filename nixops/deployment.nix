@@ -11,17 +11,17 @@ in
         deployment.ec2.keyPair = resources.ec2KeyPairs.my-key-pair;
         deployment.ec2.securityGroups = [ resources.ec2SecurityGroups.my-sg ];
 
-        deployment.route53.hostName = "the-island.smplfy.ch";
+        deployment.route53.hostName = "oh-look.smplfy.ch";
 
         services.nginx = {
           enable = true;
           recommendedProxySettings = true;
 
-          virtualHosts."the-island.smplfy.ch" = {
+          virtualHosts."oh-look.smplfy.ch" = {
             enableACME = true;
 
             locations."/" = {
-              root = "/home/island/the-island/docs/";
+              root = "/home/island/oh-look/docs/";
             };
 
             locations."/server" = {
