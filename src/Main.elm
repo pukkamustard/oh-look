@@ -240,6 +240,10 @@ type Focus
         { to : Focus
         , viewConfig : Animation ViewConfig
         }
+    | Reading
+        { island : Island
+        , post : Post
+        }
     | Writing
         { island : Island
         , direction : Vec2
@@ -288,6 +292,11 @@ viewConfig now focus =
             }
 
         Writing { island } ->
+            { size = islandWorldSize
+            , center = island.position
+            }
+
+        Reading { island } ->
             { size = islandWorldSize
             , center = island.position
             }
@@ -374,6 +383,9 @@ type Msg
     | SendPost
     | CreatePost Post
       --
+    | ViewPost Post
+    | GoBackToIsland
+      --
     | KeyPress Keyboard.KeyCode
     | Click Mouse.Position
     | Resize Window.Size
@@ -400,6 +412,10 @@ update msg model =
             }
                 |> Return.singleton
                 |> Return.command (island |> NewIsland |> send)
+                |> Return.command
+                    (postGenerator model.time island.position (vec2 1 0) "Hello!"
+                        |> Random.generate CreatePost
+                    )
 
         SelectIsland island ->
             { model
@@ -472,6 +488,26 @@ update msg model =
                 |> Return.singleton
                 |> Return.command (post |> NewPost |> send)
 
+        ViewPost post ->
+            case model.focus of
+                OneIsland island ->
+                    { model | focus = Reading { island = island, post = post } }
+                        |> Return.singleton
+
+                _ ->
+                    model
+                        |> Return.singleton
+
+        GoBackToIsland ->
+            case model.focus of
+                Reading { island } ->
+                    { model | focus = OneIsland island }
+                        |> Return.singleton
+
+                _ ->
+                    model
+                        |> Return.singleton
+
         Click position ->
             case model.focus of
                 OneIsland island ->
@@ -492,7 +528,7 @@ update msg model =
                         direction =
                             Vector2.direction worldPosition island.position
                     in
-                        { model | focus = Writing { island = island, direction = direction, msg = "" } |> Debug.log "Writing" }
+                        { model | focus = Writing { island = island, direction = direction, msg = "" } }
                             |> Return.singleton
 
                 _ ->
@@ -601,39 +637,45 @@ viewBoxHelper viewConfig =
 
 view : Model -> H.Html Msg
 view model =
-    case model.focus of
-        Writing writingState ->
-            writingInterface writingState
+    H.div []
+        [ preloadAssets
+        , case model.focus of
+            Writing writingState ->
+                writingInterface writingState
 
-        _ ->
-            S.svg
-                [ SA.width "100vw"
-                , SA.height "100vh"
-                , SA.display "block"
-                , model.focus
-                    |> viewConfig model.time
-                    |> viewBoxHelper
-                    |> SA.viewBox
-                ]
-                ([ [ preloadAssets, background ]
-                 , case model.focus of
-                    OneIsland island ->
-                        model.islands
-                            |> List.filter (.id >> (==) island.id)
-                            |> List.map (drawIsland model.time model.focus)
+            Reading readingState ->
+                readingInterface readingState
 
-                    _ ->
-                        model.islands
-                            |> List.map (drawIsland model.time model.focus)
-                 , model.posts
-                    |> List.map (drawPost model.time)
-                 ]
-                    |> List.concat
-                )
+            _ ->
+                S.svg
+                    [ SA.width "100vw"
+                    , SA.height "100vh"
+                    , SA.display "block"
+                    , model.focus
+                        |> viewConfig model.time
+                        |> viewBoxHelper
+                        |> SA.viewBox
+                    ]
+                    ([ [ background ]
+                     , case model.focus of
+                        OneIsland island ->
+                            model.islands
+                                |> List.filter (.id >> (==) island.id)
+                                |> List.map (drawIsland model.time model.focus)
+
+                        _ ->
+                            model.islands
+                                |> List.map (drawIsland model.time model.focus)
+                     , model.posts
+                        |> List.map (drawPost model.time)
+                     ]
+                        |> List.concat
+                    )
+        ]
 
 
-writingInterface : { island : Island, direction : Vec2, msg : String } -> S.Svg Msg
-writingInterface { island, direction, msg } =
+readingInterface : { island : Island, post : Post } -> S.Svg Msg
+readingInterface { island, post } =
     let
         overlayAttributes =
             [ SA.x "0"
@@ -657,6 +699,7 @@ writingInterface { island, direction, msg } =
                         , SA.calcMode "discrete"
                         , SA.dur "1s"
                         , SA.repeatCount "indefinite"
+                        , SA.id "water01"
                         ]
                         []
                     ]
@@ -668,6 +711,7 @@ writingInterface { island, direction, msg } =
                         , SA.calcMode "discrete"
                         , SA.dur "1s"
                         , SA.repeatCount "indefinite"
+                        , SA.begin "water01.begin"
                         ]
                         []
                     ]
@@ -679,17 +723,19 @@ writingInterface { island, direction, msg } =
                         , SA.calcMode "discrete"
                         , SA.dur "1s"
                         , SA.repeatCount "indefinite"
+                        , SA.begin "water01.begin"
                         ]
                         []
                     ]
                 , image "assets/writingInterface_water_04.png"
                     [ S.animate
                         [ SA.attributeName "visibility"
-                        , SA.keyTimes "0;0.75;1"
-                        , SA.values "hidden;visible;hidden"
+                        , SA.keyTimes "0;0.75"
+                        , SA.values "hidden;visible"
                         , SA.calcMode "discrete"
                         , SA.dur "1s"
                         , SA.repeatCount "indefinite"
+                        , SA.begin "water01.begin"
                         ]
                         []
                     ]
@@ -720,6 +766,105 @@ writingInterface { island, direction, msg } =
                 , HA.rows 5
                 , HA.cols 10
                 , HA.id "msgInput"
+                , HA.value post.msg
+                , HA.readonly True
+                , HE.onBlur GoBackToIsland
+                ]
+                []
+            ]
+
+
+writingInterface : { island : Island, direction : Vec2, msg : String } -> S.Svg Msg
+writingInterface { island, direction, msg } =
+    let
+        overlayAttributes =
+            [ SA.x "0"
+            , SA.y "0"
+            , SA.height "9"
+            , SA.width "16"
+            ]
+
+        image path content =
+            S.image
+                ([ SA.xlinkHref path ] ++ overlayAttributes)
+                content
+
+        waterAnimation =
+            S.g []
+                [ image "assets/writingInterface_water_01.png"
+                    [ S.animate
+                        [ SA.attributeName "visibility"
+                        , SA.keyTimes "0;0.25"
+                        , SA.values "visible;hidden"
+                        , SA.calcMode "discrete"
+                        , SA.dur "1s"
+                        , SA.repeatCount "indefinite"
+                        , SA.id "water01"
+                        ]
+                        []
+                    ]
+                , image "assets/writingInterface_water_02.png"
+                    [ S.animate
+                        [ SA.attributeName "visibility"
+                        , SA.keyTimes "0;0.25;0.5"
+                        , SA.values "hidden;visible;hidden"
+                        , SA.calcMode "discrete"
+                        , SA.dur "1s"
+                        , SA.repeatCount "indefinite"
+                        , SA.begin "water01.begin"
+                        ]
+                        []
+                    ]
+                , image "assets/writingInterface_water_03.png"
+                    [ S.animate
+                        [ SA.attributeName "visibility"
+                        , SA.keyTimes "0;0.5;0.75"
+                        , SA.values "hidden;visible;hidden"
+                        , SA.calcMode "discrete"
+                        , SA.dur "1s"
+                        , SA.repeatCount "indefinite"
+                        , SA.begin "water01.begin"
+                        ]
+                        []
+                    ]
+                , image "assets/writingInterface_water_04.png"
+                    [ S.animate
+                        [ SA.attributeName "visibility"
+                        , SA.keyTimes "0;0.75"
+                        , SA.values "hidden;visible"
+                        , SA.calcMode "discrete"
+                        , SA.dur "1s"
+                        , SA.repeatCount "indefinite"
+                        , SA.begin "water01.begin"
+                        ]
+                        []
+                    ]
+                ]
+    in
+        H.div []
+            [ S.svg
+                [ SA.width "100%"
+                , SA.height "100%"
+                , SA.display "block"
+                , SA.viewBox "0 0 16 9"
+                ]
+                [ image "assets/writingInterface_noWater_Background.png" []
+                , waterAnimation
+                ]
+            , H.textarea
+                [ HA.style
+                    [ ( "position", "fixed" )
+                    , ( "top", "35vh" )
+                    , ( "left", "38vw" )
+                    , ( "height", "45vh" )
+                    , ( "width", "22vw" )
+                    , ( "resize", "none" )
+                    , ( "outline", "0" )
+                    , ( "border", "0" )
+                    , ( "font-size", "xx-large" )
+                    ]
+                , HA.rows 5
+                , HA.cols 10
                 , HA.autofocus True
                 , HE.onInput UpdatePostMsg
                 , HE.onBlur SendPost
@@ -765,7 +910,7 @@ drawPost : Time -> Post -> S.Svg Msg
 drawPost now post =
     let
         speed =
-            0.0005
+            0.0002
 
         position =
             post.origin
@@ -777,7 +922,9 @@ drawPost now post =
         size =
             0.5
     in
-        S.g []
+        S.g
+            [ SE.onClick (ViewPost post)
+            ]
             [ S.image
                 [ SA.xlinkHref "assets/bottle_01.png"
                 , SA.x (position |> getX |> (+) (-size / 2) |> toString)
@@ -811,7 +958,8 @@ drawIsland now focus island =
 
         islandAnimation =
             S.g []
-                [ image "assets/island_01_01.png"
+                [ image "assets/island_01_01.png" []
+                , image "assets/island_01_01.png"
                     [ S.animate
                         [ SA.attributeName "visibility"
                         , SA.keyTimes "0;0.25"
