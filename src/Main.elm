@@ -881,7 +881,8 @@ preloadAssets =
                 []
     in
         S.g [ SA.visibility "hidden" ]
-            [ image "assets/island_01_01.png"
+            [ image "assets/island_01_base.png"
+            , image "assets/island_01_01.png"
             , image "assets/island_01_02.png"
             , image "assets/island_01_03.png"
             , image "assets/island_01_02.png"
@@ -958,7 +959,7 @@ drawIsland now focus island =
 
         islandAnimation =
             S.g []
-                [ image "assets/island_01_01.png" []
+                [ image "assets/island_01_base.png" []
                 , image "assets/island_01_01.png"
                     [ S.animate
                         [ SA.attributeName "visibility"
@@ -967,6 +968,7 @@ drawIsland now focus island =
                         , SA.calcMode "discrete"
                         , SA.dur "1s"
                         , SA.repeatCount "indefinite"
+                        , SA.id "islandAnimation"
                         ]
                         []
                     ]

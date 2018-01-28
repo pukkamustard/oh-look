@@ -12110,64 +12110,6 @@ var _user$project$Json_Decode_Applicative$apply = _elm_lang$core$Json_Decode$map
 		}));
 var _user$project$Json_Decode_Applicative$pure = _elm_lang$core$Json_Decode$succeed;
 
-var _user$project$Main$drawPost = F2(
-	function (now, post) {
-		var size = 0.5;
-		var speed = 5.0e-4;
-		var position = A2(
-			_elm_community$linear_algebra$Math_Vector2$add,
-			A2(_elm_community$linear_algebra$Math_Vector2$scale, speed * (now - post.createdAt), post.direction),
-			post.origin);
-		return A2(
-			_elm_lang$svg$Svg$g,
-			{ctor: '[]'},
-			{
-				ctor: '::',
-				_0: A2(
-					_elm_lang$svg$Svg$image,
-					{
-						ctor: '::',
-						_0: _elm_lang$svg$Svg_Attributes$xlinkHref('assets/bottle_01.png'),
-						_1: {
-							ctor: '::',
-							_0: _elm_lang$svg$Svg_Attributes$x(
-								_elm_lang$core$Basics$toString(
-									A2(
-										F2(
-											function (x, y) {
-												return x + y;
-											}),
-										(0 - size) / 2,
-										_elm_community$linear_algebra$Math_Vector2$getX(position)))),
-							_1: {
-								ctor: '::',
-								_0: _elm_lang$svg$Svg_Attributes$y(
-									_elm_lang$core$Basics$toString(
-										A2(
-											F2(
-												function (x, y) {
-													return x + y;
-												}),
-											(0 - size) / 2,
-											_elm_community$linear_algebra$Math_Vector2$getY(position)))),
-								_1: {
-									ctor: '::',
-									_0: _elm_lang$svg$Svg_Attributes$height(
-										_elm_lang$core$Basics$toString(size)),
-									_1: {
-										ctor: '::',
-										_0: _elm_lang$svg$Svg_Attributes$width(
-											_elm_lang$core$Basics$toString(size)),
-										_1: {ctor: '[]'}
-									}
-								}
-							}
-						}
-					},
-					{ctor: '[]'}),
-				_1: {ctor: '[]'}
-			});
-	});
 var _user$project$Main$background = A2(
 	_elm_lang$svg$Svg$image,
 	{
@@ -12212,35 +12154,39 @@ var _user$project$Main$preloadAssets = function () {
 		},
 		{
 			ctor: '::',
-			_0: image('assets/island_01_01.png'),
+			_0: image('assets/island_01_base.png'),
 			_1: {
 				ctor: '::',
-				_0: image('assets/island_01_02.png'),
+				_0: image('assets/island_01_01.png'),
 				_1: {
 					ctor: '::',
-					_0: image('assets/island_01_03.png'),
+					_0: image('assets/island_01_02.png'),
 					_1: {
 						ctor: '::',
-						_0: image('assets/island_01_02.png'),
+						_0: image('assets/island_01_03.png'),
 						_1: {
 							ctor: '::',
-							_0: image('assets/island_01_waterGradient.png'),
+							_0: image('assets/island_01_02.png'),
 							_1: {
 								ctor: '::',
-								_0: image('assets/writingInterface_noWater_Background.png'),
+								_0: image('assets/island_01_waterGradient.png'),
 								_1: {
 									ctor: '::',
-									_0: image('assets/writingInterface_water_01.png'),
+									_0: image('assets/writingInterface_noWater_Background.png'),
 									_1: {
 										ctor: '::',
-										_0: image('assets/writingInterface_water_02.png'),
+										_0: image('assets/writingInterface_water_01.png'),
 										_1: {
 											ctor: '::',
-											_0: image('assets/writingInterface_water_03.png'),
+											_0: image('assets/writingInterface_water_02.png'),
 											_1: {
 												ctor: '::',
-												_0: image('assets/writingInterface_water_04.png'),
-												_1: {ctor: '[]'}
+												_0: image('assets/writingInterface_water_03.png'),
+												_1: {
+													ctor: '::',
+													_0: image('assets/writingInterface_water_04.png'),
+													_1: {ctor: '[]'}
+												}
 											}
 										}
 									}
@@ -12267,7 +12213,7 @@ var _user$project$Main$dropFromTheFaceOfTheWorld = function (model) {
 };
 var _user$project$Main$updateFocus = function (model) {
 	var _p0 = model.focus;
-	if (_p0.ctor === 'Transitioning') {
+	if (_p0.ctor === 'IslandHopping') {
 		return A2(_user$project$Animation$isDone, _p0._0.viewConfig, model.time) ? _Fresheyeball$elm_return$Return$singleton(
 			_elm_lang$core$Native_Utils.update(
 				model,
@@ -12297,9 +12243,16 @@ var _user$project$Main$viewConfig = F2(
 					size: _user$project$Main$worldSize,
 					center: A2(_elm_community$linear_algebra$Math_Vector2$scale, 0.5, _user$project$Main$worldSize)
 				};
+			case 'Init':
+				return {
+					size: _user$project$Main$worldSize,
+					center: A2(_elm_community$linear_algebra$Math_Vector2$scale, 0.5, _user$project$Main$worldSize)
+				};
 			case 'OneIsland':
 				return {size: _user$project$Main$islandWorldSize, center: _p1._0.position};
 			case 'Writing':
+				return {size: _user$project$Main$islandWorldSize, center: _p1._0.island.position};
+			case 'Reading':
 				return {size: _user$project$Main$islandWorldSize, center: _p1._0.island.position};
 			default:
 				return A2(_user$project$Animation$animate, _p1._0.viewConfig, now);
@@ -12594,15 +12547,18 @@ var _user$project$Main$serverMsgDecoder = A2(
 var _user$project$Main$Writing = function (a) {
 	return {ctor: 'Writing', _0: a};
 };
-var _user$project$Main$Transitioning = function (a) {
-	return {ctor: 'Transitioning', _0: a};
+var _user$project$Main$Reading = function (a) {
+	return {ctor: 'Reading', _0: a};
+};
+var _user$project$Main$IslandHopping = function (a) {
+	return {ctor: 'IslandHopping', _0: a};
 };
 var _user$project$Main$transitionFocus = F3(
 	function (model, current, to) {
 		var toViewConfig = A2(_user$project$Main$viewConfig, model.time, to);
 		var currentViewConfig = A2(_user$project$Main$viewConfig, model.time, current);
 		var now = model.time;
-		return _user$project$Main$Transitioning(
+		return _user$project$Main$IslandHopping(
 			{
 				to: to,
 				viewConfig: A2(
@@ -12641,6 +12597,7 @@ var _user$project$Main$transitionFocus = F3(
 var _user$project$Main$OneIsland = function (a) {
 	return {ctor: 'OneIsland', _0: a};
 };
+var _user$project$Main$Init = {ctor: 'Init'};
 var _user$project$Main$World = {ctor: 'World'};
 var _user$project$Main$ServerMsg = function (a) {
 	return {ctor: 'ServerMsg', _0: a};
@@ -12667,7 +12624,7 @@ var _user$project$Main$subscriptions = function (model) {
 			ctor: '::',
 			_0: function () {
 				var _p6 = model.focus;
-				if (_p6.ctor === 'Transitioning') {
+				if (_p6.ctor === 'IslandHopping') {
 					return _elm_lang$animation_frame$AnimationFrame$diffs(_user$project$Main$Tick);
 				} else {
 					return A2(
@@ -12709,14 +12666,8 @@ var _user$project$Main$subscriptions = function (model) {
 			}
 		});
 };
-var _user$project$Main$CreatePost = function (a) {
-	return {ctor: 'CreatePost', _0: a};
-};
-var _user$project$Main$SendPost = {ctor: 'SendPost'};
-var _user$project$Main$UpdatePostMsg = function (a) {
-	return {ctor: 'UpdatePostMsg', _0: a};
-};
-var _user$project$Main$writingInterface = function (_p8) {
+var _user$project$Main$GoBackToIsland = {ctor: 'GoBackToIsland'};
+var _user$project$Main$readingInterface = function (_p8) {
 	var _p9 = _p8;
 	var overlayAttributes = {
 		ctor: '::',
@@ -12779,7 +12730,11 @@ var _user$project$Main$writingInterface = function (_p8) {
 											_1: {
 												ctor: '::',
 												_0: _elm_lang$svg$Svg_Attributes$repeatCount('indefinite'),
-												_1: {ctor: '[]'}
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$svg$Svg_Attributes$id('water01'),
+													_1: {ctor: '[]'}
+												}
 											}
 										}
 									}
@@ -12816,7 +12771,11 @@ var _user$project$Main$writingInterface = function (_p8) {
 												_1: {
 													ctor: '::',
 													_0: _elm_lang$svg$Svg_Attributes$repeatCount('indefinite'),
-													_1: {ctor: '[]'}
+													_1: {
+														ctor: '::',
+														_0: _elm_lang$svg$Svg_Attributes$begin('water01.begin'),
+														_1: {ctor: '[]'}
+													}
 												}
 											}
 										}
@@ -12853,7 +12812,11 @@ var _user$project$Main$writingInterface = function (_p8) {
 													_1: {
 														ctor: '::',
 														_0: _elm_lang$svg$Svg_Attributes$repeatCount('indefinite'),
-														_1: {ctor: '[]'}
+														_1: {
+															ctor: '::',
+															_0: _elm_lang$svg$Svg_Attributes$begin('water01.begin'),
+															_1: {ctor: '[]'}
+														}
 													}
 												}
 											}
@@ -12877,10 +12840,10 @@ var _user$project$Main$writingInterface = function (_p8) {
 										_0: _elm_lang$svg$Svg_Attributes$attributeName('visibility'),
 										_1: {
 											ctor: '::',
-											_0: _elm_lang$svg$Svg_Attributes$keyTimes('0;0.75;1'),
+											_0: _elm_lang$svg$Svg_Attributes$keyTimes('0;0.75'),
 											_1: {
 												ctor: '::',
-												_0: _elm_lang$svg$Svg_Attributes$values('hidden;visible;hidden'),
+												_0: _elm_lang$svg$Svg_Attributes$values('hidden;visible'),
 												_1: {
 													ctor: '::',
 													_0: _elm_lang$svg$Svg_Attributes$calcMode('discrete'),
@@ -12890,7 +12853,11 @@ var _user$project$Main$writingInterface = function (_p8) {
 														_1: {
 															ctor: '::',
 															_0: _elm_lang$svg$Svg_Attributes$repeatCount('indefinite'),
-															_1: {ctor: '[]'}
+															_1: {
+																ctor: '::',
+																_0: _elm_lang$svg$Svg_Attributes$begin('water01.begin'),
+																_1: {ctor: '[]'}
+															}
 														}
 													}
 												}
@@ -12996,15 +12963,400 @@ var _user$project$Main$writingInterface = function (_p8) {
 									_0: _elm_lang$html$Html_Attributes$id('msgInput'),
 									_1: {
 										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$autofocus(true),
+										_0: _elm_lang$html$Html_Attributes$value(_p9.post.msg),
 										_1: {
 											ctor: '::',
-											_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$UpdatePostMsg),
+											_0: _elm_lang$html$Html_Attributes$readonly(true),
 											_1: {
 												ctor: '::',
-												_0: _elm_lang$html$Html_Events$onBlur(_user$project$Main$SendPost),
+												_0: _elm_lang$html$Html_Events$onBlur(_user$project$Main$GoBackToIsland),
 												_1: {ctor: '[]'}
 											}
+										}
+									}
+								}
+							}
+						}
+					},
+					{ctor: '[]'}),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$Main$ViewPost = function (a) {
+	return {ctor: 'ViewPost', _0: a};
+};
+var _user$project$Main$drawPost = F2(
+	function (now, post) {
+		var size = 0.5;
+		var speed = 2.0e-4;
+		var position = A2(
+			_elm_community$linear_algebra$Math_Vector2$add,
+			A2(_elm_community$linear_algebra$Math_Vector2$scale, speed * (now - post.createdAt), post.direction),
+			post.origin);
+		return A2(
+			_elm_lang$svg$Svg$g,
+			{
+				ctor: '::',
+				_0: _elm_lang$svg$Svg_Events$onClick(
+					_user$project$Main$ViewPost(post)),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$svg$Svg$image,
+					{
+						ctor: '::',
+						_0: _elm_lang$svg$Svg_Attributes$xlinkHref('assets/bottle_01.png'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$svg$Svg_Attributes$x(
+								_elm_lang$core$Basics$toString(
+									A2(
+										F2(
+											function (x, y) {
+												return x + y;
+											}),
+										(0 - size) / 2,
+										_elm_community$linear_algebra$Math_Vector2$getX(position)))),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$svg$Svg_Attributes$y(
+									_elm_lang$core$Basics$toString(
+										A2(
+											F2(
+												function (x, y) {
+													return x + y;
+												}),
+											(0 - size) / 2,
+											_elm_community$linear_algebra$Math_Vector2$getY(position)))),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$svg$Svg_Attributes$height(
+										_elm_lang$core$Basics$toString(size)),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$svg$Svg_Attributes$width(
+											_elm_lang$core$Basics$toString(size)),
+										_1: {ctor: '[]'}
+									}
+								}
+							}
+						}
+					},
+					{ctor: '[]'}),
+				_1: {ctor: '[]'}
+			});
+	});
+var _user$project$Main$CreatePost = function (a) {
+	return {ctor: 'CreatePost', _0: a};
+};
+var _user$project$Main$SendPost = {ctor: 'SendPost'};
+var _user$project$Main$UpdatePostMsg = function (a) {
+	return {ctor: 'UpdatePostMsg', _0: a};
+};
+var _user$project$Main$writingInterface = function (_p10) {
+	var _p11 = _p10;
+	var overlayAttributes = {
+		ctor: '::',
+		_0: _elm_lang$svg$Svg_Attributes$x('0'),
+		_1: {
+			ctor: '::',
+			_0: _elm_lang$svg$Svg_Attributes$y('0'),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$svg$Svg_Attributes$height('9'),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$svg$Svg_Attributes$width('16'),
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	};
+	var image = F2(
+		function (path, content) {
+			return A2(
+				_elm_lang$svg$Svg$image,
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					{
+						ctor: '::',
+						_0: _elm_lang$svg$Svg_Attributes$xlinkHref(path),
+						_1: {ctor: '[]'}
+					},
+					overlayAttributes),
+				content);
+		});
+	var waterAnimation = A2(
+		_elm_lang$svg$Svg$g,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				image,
+				'assets/writingInterface_water_01.png',
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$svg$Svg$animate,
+						{
+							ctor: '::',
+							_0: _elm_lang$svg$Svg_Attributes$attributeName('visibility'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$svg$Svg_Attributes$keyTimes('0;0.25'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$svg$Svg_Attributes$values('visible;hidden'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$svg$Svg_Attributes$calcMode('discrete'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$svg$Svg_Attributes$dur('1s'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$svg$Svg_Attributes$repeatCount('indefinite'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$svg$Svg_Attributes$id('water01'),
+													_1: {ctor: '[]'}
+												}
+											}
+										}
+									}
+								}
+							}
+						},
+						{ctor: '[]'}),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					image,
+					'assets/writingInterface_water_02.png',
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$svg$Svg$animate,
+							{
+								ctor: '::',
+								_0: _elm_lang$svg$Svg_Attributes$attributeName('visibility'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$svg$Svg_Attributes$keyTimes('0;0.25;0.5'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$svg$Svg_Attributes$values('hidden;visible;hidden'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$svg$Svg_Attributes$calcMode('discrete'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$svg$Svg_Attributes$dur('1s'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$svg$Svg_Attributes$repeatCount('indefinite'),
+													_1: {
+														ctor: '::',
+														_0: _elm_lang$svg$Svg_Attributes$begin('water01.begin'),
+														_1: {ctor: '[]'}
+													}
+												}
+											}
+										}
+									}
+								}
+							},
+							{ctor: '[]'}),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						image,
+						'assets/writingInterface_water_03.png',
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$svg$Svg$animate,
+								{
+									ctor: '::',
+									_0: _elm_lang$svg$Svg_Attributes$attributeName('visibility'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$svg$Svg_Attributes$keyTimes('0;0.5;0.75'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$svg$Svg_Attributes$values('hidden;visible;hidden'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$svg$Svg_Attributes$calcMode('discrete'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$svg$Svg_Attributes$dur('1s'),
+													_1: {
+														ctor: '::',
+														_0: _elm_lang$svg$Svg_Attributes$repeatCount('indefinite'),
+														_1: {
+															ctor: '::',
+															_0: _elm_lang$svg$Svg_Attributes$begin('water01.begin'),
+															_1: {ctor: '[]'}
+														}
+													}
+												}
+											}
+										}
+									}
+								},
+								{ctor: '[]'}),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							image,
+							'assets/writingInterface_water_04.png',
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$svg$Svg$animate,
+									{
+										ctor: '::',
+										_0: _elm_lang$svg$Svg_Attributes$attributeName('visibility'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$svg$Svg_Attributes$keyTimes('0;0.75'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$svg$Svg_Attributes$values('hidden;visible'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$svg$Svg_Attributes$calcMode('discrete'),
+													_1: {
+														ctor: '::',
+														_0: _elm_lang$svg$Svg_Attributes$dur('1s'),
+														_1: {
+															ctor: '::',
+															_0: _elm_lang$svg$Svg_Attributes$repeatCount('indefinite'),
+															_1: {
+																ctor: '::',
+																_0: _elm_lang$svg$Svg_Attributes$begin('water01.begin'),
+																_1: {ctor: '[]'}
+															}
+														}
+													}
+												}
+											}
+										}
+									},
+									{ctor: '[]'}),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		});
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$svg$Svg$svg,
+				{
+					ctor: '::',
+					_0: _elm_lang$svg$Svg_Attributes$width('100%'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$svg$Svg_Attributes$height('100%'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$svg$Svg_Attributes$display('block'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$svg$Svg_Attributes$viewBox('0 0 16 9'),
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				},
+				{
+					ctor: '::',
+					_0: A2(
+						image,
+						'assets/writingInterface_noWater_Background.png',
+						{ctor: '[]'}),
+					_1: {
+						ctor: '::',
+						_0: waterAnimation,
+						_1: {ctor: '[]'}
+					}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$textarea,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$style(
+							{
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'position', _1: 'fixed'},
+								_1: {
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'top', _1: '35vh'},
+									_1: {
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'left', _1: '38vw'},
+										_1: {
+											ctor: '::',
+											_0: {ctor: '_Tuple2', _0: 'height', _1: '45vh'},
+											_1: {
+												ctor: '::',
+												_0: {ctor: '_Tuple2', _0: 'width', _1: '22vw'},
+												_1: {
+													ctor: '::',
+													_0: {ctor: '_Tuple2', _0: 'resize', _1: 'none'},
+													_1: {
+														ctor: '::',
+														_0: {ctor: '_Tuple2', _0: 'outline', _1: '0'},
+														_1: {
+															ctor: '::',
+															_0: {ctor: '_Tuple2', _0: 'border', _1: '0'},
+															_1: {
+																ctor: '::',
+																_0: {ctor: '_Tuple2', _0: 'font-size', _1: 'xx-large'},
+																_1: {ctor: '[]'}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$rows(5),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$cols(10),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$autofocus(true),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$UpdatePostMsg),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Events$onBlur(_user$project$Main$SendPost),
+											_1: {ctor: '[]'}
 										}
 									}
 								}
@@ -13071,44 +13423,13 @@ var _user$project$Main$drawIsland = F3(
 				ctor: '::',
 				_0: A2(
 					image,
-					'assets/island_01_01.png',
-					{
-						ctor: '::',
-						_0: A2(
-							_elm_lang$svg$Svg$animate,
-							{
-								ctor: '::',
-								_0: _elm_lang$svg$Svg_Attributes$attributeName('visibility'),
-								_1: {
-									ctor: '::',
-									_0: _elm_lang$svg$Svg_Attributes$keyTimes('0;0.25'),
-									_1: {
-										ctor: '::',
-										_0: _elm_lang$svg$Svg_Attributes$values('visible;hidden'),
-										_1: {
-											ctor: '::',
-											_0: _elm_lang$svg$Svg_Attributes$calcMode('discrete'),
-											_1: {
-												ctor: '::',
-												_0: _elm_lang$svg$Svg_Attributes$dur('1s'),
-												_1: {
-													ctor: '::',
-													_0: _elm_lang$svg$Svg_Attributes$repeatCount('indefinite'),
-													_1: {ctor: '[]'}
-												}
-											}
-										}
-									}
-								}
-							},
-							{ctor: '[]'}),
-						_1: {ctor: '[]'}
-					}),
+					'assets/island_01_base.png',
+					{ctor: '[]'}),
 				_1: {
 					ctor: '::',
 					_0: A2(
 						image,
-						'assets/island_01_02.png',
+						'assets/island_01_01.png',
 						{
 							ctor: '::',
 							_0: A2(
@@ -13118,10 +13439,10 @@ var _user$project$Main$drawIsland = F3(
 									_0: _elm_lang$svg$Svg_Attributes$attributeName('visibility'),
 									_1: {
 										ctor: '::',
-										_0: _elm_lang$svg$Svg_Attributes$keyTimes('0;0.25;0.5'),
+										_0: _elm_lang$svg$Svg_Attributes$keyTimes('0;0.25'),
 										_1: {
 											ctor: '::',
-											_0: _elm_lang$svg$Svg_Attributes$values('hidden;visible;hidden'),
+											_0: _elm_lang$svg$Svg_Attributes$values('visible;hidden'),
 											_1: {
 												ctor: '::',
 												_0: _elm_lang$svg$Svg_Attributes$calcMode('discrete'),
@@ -13131,7 +13452,11 @@ var _user$project$Main$drawIsland = F3(
 													_1: {
 														ctor: '::',
 														_0: _elm_lang$svg$Svg_Attributes$repeatCount('indefinite'),
-														_1: {ctor: '[]'}
+														_1: {
+															ctor: '::',
+															_0: _elm_lang$svg$Svg_Attributes$id('islandAnimation'),
+															_1: {ctor: '[]'}
+														}
 													}
 												}
 											}
@@ -13145,7 +13470,7 @@ var _user$project$Main$drawIsland = F3(
 						ctor: '::',
 						_0: A2(
 							image,
-							'assets/island_01_03.png',
+							'assets/island_01_02.png',
 							{
 								ctor: '::',
 								_0: A2(
@@ -13155,7 +13480,7 @@ var _user$project$Main$drawIsland = F3(
 										_0: _elm_lang$svg$Svg_Attributes$attributeName('visibility'),
 										_1: {
 											ctor: '::',
-											_0: _elm_lang$svg$Svg_Attributes$keyTimes('0;0.5;0.75'),
+											_0: _elm_lang$svg$Svg_Attributes$keyTimes('0;0.25;0.5'),
 											_1: {
 												ctor: '::',
 												_0: _elm_lang$svg$Svg_Attributes$values('hidden;visible;hidden'),
@@ -13182,7 +13507,7 @@ var _user$project$Main$drawIsland = F3(
 							ctor: '::',
 							_0: A2(
 								image,
-								'assets/island_01_04.png',
+								'assets/island_01_03.png',
 								{
 									ctor: '::',
 									_0: A2(
@@ -13192,7 +13517,7 @@ var _user$project$Main$drawIsland = F3(
 											_0: _elm_lang$svg$Svg_Attributes$attributeName('visibility'),
 											_1: {
 												ctor: '::',
-												_0: _elm_lang$svg$Svg_Attributes$keyTimes('0;0.75;1'),
+												_0: _elm_lang$svg$Svg_Attributes$keyTimes('0;0.5;0.75'),
 												_1: {
 													ctor: '::',
 													_0: _elm_lang$svg$Svg_Attributes$values('hidden;visible;hidden'),
@@ -13215,7 +13540,45 @@ var _user$project$Main$drawIsland = F3(
 										{ctor: '[]'}),
 									_1: {ctor: '[]'}
 								}),
-							_1: {ctor: '[]'}
+							_1: {
+								ctor: '::',
+								_0: A2(
+									image,
+									'assets/island_01_04.png',
+									{
+										ctor: '::',
+										_0: A2(
+											_elm_lang$svg$Svg$animate,
+											{
+												ctor: '::',
+												_0: _elm_lang$svg$Svg_Attributes$attributeName('visibility'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$svg$Svg_Attributes$keyTimes('0;0.75;1'),
+													_1: {
+														ctor: '::',
+														_0: _elm_lang$svg$Svg_Attributes$values('hidden;visible;hidden'),
+														_1: {
+															ctor: '::',
+															_0: _elm_lang$svg$Svg_Attributes$calcMode('discrete'),
+															_1: {
+																ctor: '::',
+																_0: _elm_lang$svg$Svg_Attributes$dur('1s'),
+																_1: {
+																	ctor: '::',
+																	_0: _elm_lang$svg$Svg_Attributes$repeatCount('indefinite'),
+																	_1: {ctor: '[]'}
+																}
+															}
+														}
+													}
+												}
+											},
+											{ctor: '[]'}),
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							}
 						}
 					}
 				}
@@ -13225,8 +13588,8 @@ var _user$project$Main$drawIsland = F3(
 			{
 				ctor: '::',
 				_0: function () {
-					var _p10 = focus;
-					if (_p10.ctor === 'World') {
+					var _p12 = focus;
+					if (_p12.ctor === 'World') {
 						return _elm_lang$svg$Svg_Events$onClick(
 							_user$project$Main$SelectIsland(island));
 					} else {
@@ -13263,83 +13626,95 @@ var _user$project$Main$drawIsland = F3(
 			});
 	});
 var _user$project$Main$view = function (model) {
-	var _p11 = model.focus;
-	if (_p11.ctor === 'Writing') {
-		return _user$project$Main$writingInterface(_p11._0);
-	} else {
-		return A2(
-			_elm_lang$svg$Svg$svg,
-			{
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _user$project$Main$preloadAssets,
+			_1: {
 				ctor: '::',
-				_0: _elm_lang$svg$Svg_Attributes$width('100vw'),
-				_1: {
-					ctor: '::',
-					_0: _elm_lang$svg$Svg_Attributes$height('100vh'),
-					_1: {
-						ctor: '::',
-						_0: _elm_lang$svg$Svg_Attributes$display('block'),
-						_1: {
-							ctor: '::',
-							_0: _elm_lang$svg$Svg_Attributes$viewBox(
-								_user$project$Main$viewBoxHelper(
-									A2(_user$project$Main$viewConfig, model.time, model.focus))),
-							_1: {ctor: '[]'}
-						}
-					}
-				}
-			},
-			_elm_lang$core$List$concat(
-				{
-					ctor: '::',
-					_0: {
-						ctor: '::',
-						_0: _user$project$Main$preloadAssets,
-						_1: {
-							ctor: '::',
-							_0: _user$project$Main$background,
-							_1: {ctor: '[]'}
-						}
-					},
-					_1: {
-						ctor: '::',
-						_0: function () {
-							var _p12 = model.focus;
-							if (_p12.ctor === 'OneIsland') {
-								return A2(
-									_elm_lang$core$List$map,
-									A2(_user$project$Main$drawIsland, model.time, model.focus),
-									A2(
-										_elm_lang$core$List$filter,
-										function (_p13) {
-											return A2(
-												F2(
-													function (x, y) {
-														return _elm_lang$core$Native_Utils.eq(x, y);
-													}),
-												_p12._0.id,
-												function (_) {
-													return _.id;
-												}(_p13));
+				_0: function () {
+					var _p13 = model.focus;
+					switch (_p13.ctor) {
+						case 'Writing':
+							return _user$project$Main$writingInterface(_p13._0);
+						case 'Reading':
+							return _user$project$Main$readingInterface(_p13._0);
+						default:
+							return A2(
+								_elm_lang$svg$Svg$svg,
+								{
+									ctor: '::',
+									_0: _elm_lang$svg$Svg_Attributes$width('100vw'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$svg$Svg_Attributes$height('100vh'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$svg$Svg_Attributes$display('block'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$svg$Svg_Attributes$viewBox(
+													_user$project$Main$viewBoxHelper(
+														A2(_user$project$Main$viewConfig, model.time, model.focus))),
+												_1: {ctor: '[]'}
+											}
+										}
+									}
+								},
+								_elm_lang$core$List$concat(
+									{
+										ctor: '::',
+										_0: {
+											ctor: '::',
+											_0: _user$project$Main$background,
+											_1: {ctor: '[]'}
 										},
-										model.islands));
-							} else {
-								return A2(
-									_elm_lang$core$List$map,
-									A2(_user$project$Main$drawIsland, model.time, model.focus),
-									model.islands);
-							}
-						}(),
-						_1: {
-							ctor: '::',
-							_0: A2(
-								_elm_lang$core$List$map,
-								_user$project$Main$drawPost(model.time),
-								model.posts),
-							_1: {ctor: '[]'}
-						}
+										_1: {
+											ctor: '::',
+											_0: function () {
+												var _p14 = model.focus;
+												if (_p14.ctor === 'OneIsland') {
+													return A2(
+														_elm_lang$core$List$map,
+														A2(_user$project$Main$drawIsland, model.time, model.focus),
+														A2(
+															_elm_lang$core$List$filter,
+															function (_p15) {
+																return A2(
+																	F2(
+																		function (x, y) {
+																			return _elm_lang$core$Native_Utils.eq(x, y);
+																		}),
+																	_p14._0.id,
+																	function (_) {
+																		return _.id;
+																	}(_p15));
+															},
+															model.islands));
+												} else {
+													return A2(
+														_elm_lang$core$List$map,
+														A2(_user$project$Main$drawIsland, model.time, model.focus),
+														model.islands);
+												}
+											}(),
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_elm_lang$core$List$map,
+													_user$project$Main$drawPost(model.time),
+													model.posts),
+												_1: {ctor: '[]'}
+											}
+										}
+									}));
 					}
-				}));
-	}
+				}(),
+				_1: {ctor: '[]'}
+			}
+		});
 };
 var _user$project$Main$CreateIsland = function (a) {
 	return {ctor: 'CreateIsland', _0: a};
@@ -13363,29 +13738,47 @@ var _user$project$Main$init = A2(
 					windowSize: {width: 100, height: 100},
 					islands: {ctor: '[]'},
 					posts: {ctor: '[]'},
-					focus: _user$project$Main$World
+					focus: _user$project$Main$Init
 				}))));
 var _user$project$Main$update = F2(
 	function (msg, model) {
-		var _p14 = msg;
-		switch (_p14.ctor) {
+		var _p16 = msg;
+		switch (_p16.ctor) {
 			case 'CreateIsland':
-				var _p15 = _p14._0;
+				var _p18 = _p16._0;
 				return A2(
 					_Fresheyeball$elm_return$Return$command,
-					_user$project$Main$send(
-						_user$project$Main$NewIsland(_p15)),
-					_Fresheyeball$elm_return$Return$singleton(
-						_elm_lang$core$Native_Utils.update(
-							model,
-							{
-								islands: {ctor: '::', _0: _p15, _1: model.islands},
-								focus: A3(
-									_user$project$Main$transitionFocus,
-									model,
-									model.focus,
-									_user$project$Main$OneIsland(_p15))
-							})));
+					A2(
+						_mgold$elm_random_pcg$Random_Pcg$generate,
+						_user$project$Main$CreatePost,
+						A4(
+							_user$project$Main$postGenerator,
+							model.time,
+							_p18.position,
+							A2(_elm_community$linear_algebra$Math_Vector2$vec2, 1, 0),
+							'Hello!')),
+					A2(
+						_Fresheyeball$elm_return$Return$command,
+						_user$project$Main$send(
+							_user$project$Main$NewIsland(_p18)),
+						_Fresheyeball$elm_return$Return$singleton(
+							_elm_lang$core$Native_Utils.update(
+								model,
+								{
+									islands: {ctor: '::', _0: _p18, _1: model.islands},
+									focus: function () {
+										var _p17 = model.focus;
+										if (_p17.ctor === 'World') {
+											return A3(
+												_user$project$Main$transitionFocus,
+												model,
+												model.focus,
+												_user$project$Main$OneIsland(_p18));
+										} else {
+											return _user$project$Main$OneIsland(_p18);
+										}
+									}()
+								}))));
 			case 'SelectIsland':
 				return _Fresheyeball$elm_return$Return$singleton(
 					_elm_lang$core$Native_Utils.update(
@@ -13395,7 +13788,7 @@ var _user$project$Main$update = F2(
 								_user$project$Main$transitionFocus,
 								model,
 								model.focus,
-								_user$project$Main$OneIsland(_p14._0))
+								_user$project$Main$OneIsland(_p16._0))
 						}));
 			case 'Tick':
 				return A2(
@@ -13404,7 +13797,7 @@ var _user$project$Main$update = F2(
 					_Fresheyeball$elm_return$Return$singleton(
 						_elm_lang$core$Native_Utils.update(
 							model,
-							{time: model.time + _p14._0})));
+							{time: model.time + _p16._0})));
 			case 'CleanUp':
 				return A2(
 					_Fresheyeball$elm_return$Return$andThen,
@@ -13414,87 +13807,115 @@ var _user$project$Main$update = F2(
 				return _Fresheyeball$elm_return$Return$singleton(
 					_elm_lang$core$Native_Utils.update(
 						model,
-						{time: _p14._0}));
+						{time: _p16._0}));
 			case 'KeyPress':
-				var _p16 = _p14._0;
-				return _elm_lang$core$Native_Utils.eq(
-					_p16,
-					_elm_lang$core$Char$toCode(
-						_elm_lang$core$Native_Utils.chr('w'))) ? _Fresheyeball$elm_return$Return$singleton(
-					_elm_lang$core$Native_Utils.update(
-						model,
-						{
-							focus: A3(_user$project$Main$transitionFocus, model, model.focus, _user$project$Main$World)
-						})) : (_elm_lang$core$Native_Utils.eq(
-					_p16,
-					_elm_lang$core$Char$toCode(
-						_elm_lang$core$Native_Utils.chr('i'))) ? A2(
-					_Fresheyeball$elm_return$Return$command,
-					A2(
-						_mgold$elm_random_pcg$Random_Pcg$generate,
-						_user$project$Main$CreateIsland,
-						_user$project$Main$islandGenerator(model.islands)),
-					_Fresheyeball$elm_return$Return$singleton(model)) : (_elm_lang$core$Native_Utils.eq(
-					_p16,
-					_elm_lang$core$Char$toCode(
-						_elm_lang$core$Native_Utils.chr('c'))) ? A2(
-					_Fresheyeball$elm_return$Return$command,
-					_user$project$Main$send(_user$project$Main$Clear),
-					_user$project$Main$init) : _Fresheyeball$elm_return$Return$singleton(model)));
+				var _p20 = _p16._0;
+				var _p19 = model.focus;
+				if (_p19.ctor === 'World') {
+					return _elm_lang$core$Native_Utils.eq(
+						_p20,
+						_elm_lang$core$Char$toCode(
+							_elm_lang$core$Native_Utils.chr('i'))) ? A2(
+						_Fresheyeball$elm_return$Return$command,
+						A2(
+							_mgold$elm_random_pcg$Random_Pcg$generate,
+							_user$project$Main$CreateIsland,
+							_user$project$Main$islandGenerator(model.islands)),
+						_Fresheyeball$elm_return$Return$singleton(model)) : (_elm_lang$core$Native_Utils.eq(
+						_p20,
+						_elm_lang$core$Char$toCode(
+							_elm_lang$core$Native_Utils.chr('c'))) ? A2(
+						_Fresheyeball$elm_return$Return$command,
+						_user$project$Main$send(_user$project$Main$Clear),
+						_user$project$Main$init) : _Fresheyeball$elm_return$Return$singleton(model));
+				} else {
+					return _Fresheyeball$elm_return$Return$singleton(model);
+				}
 			case 'UpdatePostMsg':
-				var _p17 = model.focus;
-				if (_p17.ctor === 'Writing') {
+				var _p21 = model.focus;
+				if (_p21.ctor === 'Writing') {
 					return _Fresheyeball$elm_return$Return$singleton(
 						_elm_lang$core$Native_Utils.update(
 							model,
 							{
 								focus: _user$project$Main$Writing(
 									_elm_lang$core$Native_Utils.update(
-										_p17._0,
-										{msg: _p14._0}))
+										_p21._0,
+										{msg: _p16._0}))
 							}));
 				} else {
 					return _Fresheyeball$elm_return$Return$singleton(model);
 				}
 			case 'SendPost':
-				var _p18 = model.focus;
-				if (_p18.ctor === 'Writing') {
-					var _p19 = _p18._0.island;
-					return A2(
+				var _p22 = model.focus;
+				if (_p22.ctor === 'Writing') {
+					var _p24 = _p22._0.msg;
+					var _p23 = _p22._0.island;
+					return _elm_lang$core$Native_Utils.eq(_p24, 'marco polo') ? _Fresheyeball$elm_return$Return$singleton(
+						_elm_lang$core$Native_Utils.update(
+							model,
+							{
+								focus: A3(_user$project$Main$transitionFocus, model, model.focus, _user$project$Main$World)
+							})) : A2(
 						_Fresheyeball$elm_return$Return$command,
 						A2(
 							_mgold$elm_random_pcg$Random_Pcg$generate,
 							_user$project$Main$CreatePost,
-							A4(_user$project$Main$postGenerator, model.time, _p19.position, _p18._0.direction, _p18._0.msg)),
+							A4(_user$project$Main$postGenerator, model.time, _p23.position, _p22._0.direction, _p24)),
 						_Fresheyeball$elm_return$Return$singleton(
 							_elm_lang$core$Native_Utils.update(
 								model,
 								{
-									focus: _user$project$Main$OneIsland(_p19)
+									focus: _user$project$Main$OneIsland(_p23)
 								})));
 				} else {
 					return _Fresheyeball$elm_return$Return$singleton(model);
 				}
 			case 'CreatePost':
-				var _p20 = _p14._0;
+				var _p25 = _p16._0;
 				return A2(
 					_Fresheyeball$elm_return$Return$command,
 					_user$project$Main$send(
-						_user$project$Main$NewPost(_p20)),
+						_user$project$Main$NewPost(_p25)),
 					_Fresheyeball$elm_return$Return$singleton(
 						_elm_lang$core$Native_Utils.update(
 							model,
 							{
-								posts: {ctor: '::', _0: _p20, _1: model.posts}
+								posts: {ctor: '::', _0: _p25, _1: model.posts}
 							})));
+			case 'ViewPost':
+				var _p26 = model.focus;
+				if (_p26.ctor === 'OneIsland') {
+					return _Fresheyeball$elm_return$Return$singleton(
+						_elm_lang$core$Native_Utils.update(
+							model,
+							{
+								focus: _user$project$Main$Reading(
+									{island: _p26._0, post: _p16._0})
+							}));
+				} else {
+					return _Fresheyeball$elm_return$Return$singleton(model);
+				}
+			case 'GoBackToIsland':
+				var _p27 = model.focus;
+				if (_p27.ctor === 'Reading') {
+					return _Fresheyeball$elm_return$Return$singleton(
+						_elm_lang$core$Native_Utils.update(
+							model,
+							{
+								focus: _user$project$Main$OneIsland(_p27._0.island)
+							}));
+				} else {
+					return _Fresheyeball$elm_return$Return$singleton(model);
+				}
 			case 'Click':
-				var _p23 = _p14._0;
-				var _p21 = model.focus;
-				if (_p21.ctor === 'OneIsland') {
-					var _p22 = _p21._0;
+				var _p30 = _p16._0;
+				var _p28 = model.focus;
+				if (_p28.ctor === 'OneIsland') {
+					var _p29 = _p28._0;
 					var relative = {
-						x: _elm_lang$core$Basics$toFloat(_p23.x) / _elm_lang$core$Basics$toFloat(model.windowSize.width),
-						y: _elm_lang$core$Basics$toFloat(_p23.y) / _elm_lang$core$Basics$toFloat(model.windowSize.height)
+						x: _elm_lang$core$Basics$toFloat(_p30.x) / _elm_lang$core$Basics$toFloat(model.windowSize.width),
+						y: _elm_lang$core$Basics$toFloat(_p30.y) / _elm_lang$core$Basics$toFloat(model.windowSize.height)
 					};
 					var worldPosition = A2(
 						_elm_community$linear_algebra$Math_Vector2$add,
@@ -13524,16 +13945,13 @@ var _user$project$Main$update = F2(
 										return _.size;
 									}(
 										A2(_user$project$Main$viewConfig, model.time, model.focus))))));
-					var direction = A2(_elm_community$linear_algebra$Math_Vector2$direction, worldPosition, _p22.position);
+					var direction = A2(_elm_community$linear_algebra$Math_Vector2$direction, worldPosition, _p29.position);
 					return _Fresheyeball$elm_return$Return$singleton(
 						_elm_lang$core$Native_Utils.update(
 							model,
 							{
-								focus: A2(
-									_elm_lang$core$Debug$log,
-									'Writing',
-									_user$project$Main$Writing(
-										{island: _p22, direction: direction, msg: ''}))
+								focus: _user$project$Main$Writing(
+									{island: _p29, direction: direction, msg: ''})
 							}));
 				} else {
 					return _Fresheyeball$elm_return$Return$singleton(model);
@@ -13542,31 +13960,31 @@ var _user$project$Main$update = F2(
 				return _Fresheyeball$elm_return$Return$singleton(
 					_elm_lang$core$Native_Utils.update(
 						model,
-						{windowSize: _p14._0}));
+						{windowSize: _p16._0}));
 			default:
-				if (_p14._0.ctor === 'Ok') {
-					switch (_p14._0._0.ctor) {
+				if (_p16._0.ctor === 'Ok') {
+					switch (_p16._0._0.ctor) {
 						case 'NewPost':
-							var _p24 = _p14._0._0._0;
+							var _p31 = _p16._0._0._0;
 							return _Fresheyeball$elm_return$Return$singleton(
 								_elm_lang$core$Native_Utils.update(
 									model,
 									{
-										posts: A2(_elm_lang$core$List$member, _p24, model.posts) ? model.posts : {ctor: '::', _0: _p24, _1: model.posts}
+										posts: A2(_elm_lang$core$List$member, _p31, model.posts) ? model.posts : {ctor: '::', _0: _p31, _1: model.posts}
 									}));
 						case 'NewIsland':
-							var _p25 = _p14._0._0._0;
+							var _p32 = _p16._0._0._0;
 							return _Fresheyeball$elm_return$Return$singleton(
 								_elm_lang$core$Native_Utils.update(
 									model,
 									{
-										islands: A2(_elm_lang$core$List$member, _p25, model.islands) ? model.islands : {ctor: '::', _0: _p25, _1: model.islands}
+										islands: A2(_elm_lang$core$List$member, _p32, model.islands) ? model.islands : {ctor: '::', _0: _p32, _1: model.islands}
 									}));
 						default:
 							return _user$project$Main$init;
 					}
 				} else {
-					var msg_ = A2(_elm_lang$core$Debug$log, 'ServerMsg decoding failed', _p14._0._0);
+					var msg_ = A2(_elm_lang$core$Debug$log, 'ServerMsg decoding failed', _p16._0._0);
 					return _Fresheyeball$elm_return$Return$singleton(model);
 				}
 		}
