@@ -15,5 +15,7 @@ function enterFullscreen (element) {
 document.getElementById('start-button').addEventListener('click', () => {
   document.getElementById('pre-page').style.display = 'none'
   enterFullscreen(document.documentElement)
+
+  document.getElementById('audio').play()
   Elm.Main.fullscreen()
 })
