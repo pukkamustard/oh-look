@@ -171,10 +171,11 @@ type ServerMsg
 
 serverUrl : String
 serverUrl =
-    "ws://localhost:9998"
+    "ws://the-island.smplfy.ch/server"
 
 
 
+--"ws://localhost:9998"
 --"ws://192.168.43.251:9998"
 
 
