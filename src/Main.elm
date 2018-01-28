@@ -234,8 +234,9 @@ send msg =
 -}
 type Focus
     = World
+    | Init
     | OneIsland Island
-    | Transitioning
+    | IslandHopping
         { to : Focus
         , viewConfig : Animation ViewConfig
         }
@@ -276,6 +277,11 @@ viewConfig now focus =
             , center = worldSize |> Vector2.scale 0.5
             }
 
+        Init ->
+            { size = worldSize
+            , center = worldSize |> Vector2.scale 0.5
+            }
+
         OneIsland island ->
             { size = islandWorldSize
             , center = island.position
@@ -286,7 +292,7 @@ viewConfig now focus =
             , center = island.position
             }
 
-        Transitioning { viewConfig } ->
+        IslandHopping { viewConfig } ->
             Animation.animate viewConfig now
 
 
@@ -307,7 +313,7 @@ transitionFocus model current to =
         toViewConfig =
             viewConfig model.time to
     in
-        Transitioning
+        IslandHopping
             { to = to
             , viewConfig =
                 (\size center -> { size = size, center = center })
@@ -348,7 +354,7 @@ init =
     --
     , islands = []
     , posts = []
-    , focus = World
+    , focus = Init
     }
         |> Return.singleton
         |> Return.command (Window.size |> Task.perform Resize)
@@ -384,7 +390,13 @@ update msg model =
         CreateIsland island ->
             { model
                 | islands = island :: model.islands
-                , focus = transitionFocus model model.focus (OneIsland island)
+                , focus =
+                    case model.focus of
+                        World ->
+                            transitionFocus model model.focus (OneIsland island)
+
+                        _ ->
+                            OneIsland island
             }
                 |> Return.singleton
                 |> Return.command (island |> NewIsland |> send)
@@ -526,7 +538,7 @@ update msg model =
 updateFocus : Model -> Return Msg Model
 updateFocus model =
     case model.focus of
-        Transitioning { to, viewConfig } ->
+        IslandHopping { to, viewConfig } ->
             if Animation.isDone viewConfig model.time then
                 { model | focus = to }
                     |> Return.singleton
@@ -556,7 +568,7 @@ dropFromTheFaceOfTheWorld model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     [ case model.focus of
-        Transitioning _ ->
+        IslandHopping _ ->
             AnimationFrame.diffs Tick
 
         _ ->
