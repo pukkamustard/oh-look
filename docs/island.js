@@ -12249,7 +12249,7 @@ var _user$project$Main$dropFromTheFaceOfTheWorld = function (model) {
 				posts: A2(
 					_elm_lang$core$List$filter,
 					function (post) {
-						return _elm_lang$core$Native_Utils.cmp(model.time - post.createdAt, 2 * _elm_lang$core$Time$minute) < 1;
+						return _elm_lang$core$Native_Utils.cmp(model.time - post.createdAt, 20 * _elm_lang$core$Time$minute) < 1;
 					},
 					model.posts)
 			}));
@@ -12681,7 +12681,7 @@ var _user$project$Main$subscriptions = function (model) {
 				ctor: '::',
 				_0: A2(
 					_elm_lang$core$Time$every,
-					10 * _elm_lang$core$Time$second,
+					30 * _elm_lang$core$Time$second,
 					_elm_lang$core$Basics$always(_user$project$Main$CleanUp)),
 				_1: {
 					ctor: '::',

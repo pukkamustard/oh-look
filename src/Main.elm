@@ -593,7 +593,7 @@ dropFromTheFaceOfTheWorld model =
     { model
         | posts =
             model.posts
-                |> List.filter (\post -> model.time - post.createdAt <= 2 * Time.minute)
+                |> List.filter (\post -> model.time - post.createdAt <= 20 * Time.minute)
     }
         |> Return.singleton
 
@@ -610,7 +610,7 @@ subscriptions model =
 
         _ ->
             Time.every (250 * Time.millisecond) (always <| Tick 250)
-    , Time.every (10 * Time.second) (always CleanUp)
+    , Time.every (30 * Time.second) (always CleanUp)
     , Keyboard.presses KeyPress
     , case model.focus of
         OneIsland _ ->
