@@ -84,6 +84,8 @@ function enterFullscreen (element) {
 document.getElementById('start-button').addEventListener('click', () => {
   document.getElementById('pre-page').style.display = 'none'
   enterFullscreen(document.documentElement)
+
+  document.getElementById('audio').play()
   Elm.Main.fullscreen()
 })
 
@@ -12140,10 +12142,10 @@ var _user$project$Main$background = A2(
 				_0: _elm_lang$svg$Svg_Attributes$y('-100'),
 				_1: {
 					ctor: '::',
-					_0: _elm_lang$svg$Svg_Attributes$height('200'),
+					_0: _elm_lang$svg$Svg_Attributes$height('400'),
 					_1: {
 						ctor: '::',
-						_0: _elm_lang$svg$Svg_Attributes$width('200'),
+						_0: _elm_lang$svg$Svg_Attributes$width('400'),
 						_1: {ctor: '[]'}
 					}
 				}
@@ -12333,7 +12335,7 @@ var _user$project$Main$viewBoxHelper = function (viewConfig) {
 							_elm_lang$core$Basics$toString(
 								_elm_community$linear_algebra$Math_Vector2$getY(viewConfig.size))))))));
 };
-var _user$project$Main$serverUrl = 'ws://localhost:9998';
+var _user$project$Main$serverUrl = 'ws://the-island.smplfy.ch/server';
 var _user$project$Main$encodeVec2 = function (vec) {
 	return _elm_lang$core$Json_Encode$object(
 		{
