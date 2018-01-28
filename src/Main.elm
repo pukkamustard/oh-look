@@ -948,7 +948,15 @@ drawPost now post =
         S.g
             [ SE.onClick (ViewPost post)
             ]
-            [ S.image
+            [ S.circle
+                [ SA.cx (position |> getX |> toString)
+                , SA.cy (position |> getY |> toString)
+                , SA.r (size |> (*) 1.5 |> toString)
+                , SA.fill "red"
+                , SA.opacity "0"
+                ]
+                []
+            , S.image
                 [ SA.xlinkHref "assets/bottle_01.png"
                 , SA.x (position |> getX |> (+) (-size / 2) |> toString)
                 , SA.y (position |> getY |> (+) (-size / 2) |> toString)

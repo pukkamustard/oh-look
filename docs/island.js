@@ -13060,40 +13060,34 @@ var _user$project$Main$drawPost = F2(
 			{
 				ctor: '::',
 				_0: A2(
-					_elm_lang$svg$Svg$image,
+					_elm_lang$svg$Svg$circle,
 					{
 						ctor: '::',
-						_0: _elm_lang$svg$Svg_Attributes$xlinkHref('assets/bottle_01.png'),
+						_0: _elm_lang$svg$Svg_Attributes$cx(
+							_elm_lang$core$Basics$toString(
+								_elm_community$linear_algebra$Math_Vector2$getX(position))),
 						_1: {
 							ctor: '::',
-							_0: _elm_lang$svg$Svg_Attributes$x(
+							_0: _elm_lang$svg$Svg_Attributes$cy(
 								_elm_lang$core$Basics$toString(
-									A2(
-										F2(
-											function (x, y) {
-												return x + y;
-											}),
-										(0 - size) / 2,
-										_elm_community$linear_algebra$Math_Vector2$getX(position)))),
+									_elm_community$linear_algebra$Math_Vector2$getY(position))),
 							_1: {
 								ctor: '::',
-								_0: _elm_lang$svg$Svg_Attributes$y(
+								_0: _elm_lang$svg$Svg_Attributes$r(
 									_elm_lang$core$Basics$toString(
 										A2(
 											F2(
 												function (x, y) {
-													return x + y;
+													return x * y;
 												}),
-											(0 - size) / 2,
-											_elm_community$linear_algebra$Math_Vector2$getY(position)))),
+											1.5,
+											size))),
 								_1: {
 									ctor: '::',
-									_0: _elm_lang$svg$Svg_Attributes$height(
-										_elm_lang$core$Basics$toString(size)),
+									_0: _elm_lang$svg$Svg_Attributes$fill('red'),
 									_1: {
 										ctor: '::',
-										_0: _elm_lang$svg$Svg_Attributes$width(
-											_elm_lang$core$Basics$toString(size)),
+										_0: _elm_lang$svg$Svg_Attributes$opacity('0'),
 										_1: {ctor: '[]'}
 									}
 								}
@@ -13101,7 +13095,52 @@ var _user$project$Main$drawPost = F2(
 						}
 					},
 					{ctor: '[]'}),
-				_1: {ctor: '[]'}
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$svg$Svg$image,
+						{
+							ctor: '::',
+							_0: _elm_lang$svg$Svg_Attributes$xlinkHref('assets/bottle_01.png'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$svg$Svg_Attributes$x(
+									_elm_lang$core$Basics$toString(
+										A2(
+											F2(
+												function (x, y) {
+													return x + y;
+												}),
+											(0 - size) / 2,
+											_elm_community$linear_algebra$Math_Vector2$getX(position)))),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$svg$Svg_Attributes$y(
+										_elm_lang$core$Basics$toString(
+											A2(
+												F2(
+													function (x, y) {
+														return x + y;
+													}),
+												(0 - size) / 2,
+												_elm_community$linear_algebra$Math_Vector2$getY(position)))),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$svg$Svg_Attributes$height(
+											_elm_lang$core$Basics$toString(size)),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$svg$Svg_Attributes$width(
+												_elm_lang$core$Basics$toString(size)),
+											_1: {ctor: '[]'}
+										}
+									}
+								}
+							}
+						},
+						{ctor: '[]'}),
+					_1: {ctor: '[]'}
+				}
 			});
 	});
 var _user$project$Main$CreatePost = function (a) {
